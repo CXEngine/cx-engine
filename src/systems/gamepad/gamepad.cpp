@@ -13,7 +13,7 @@ static float applyDeadZone(float v, float dz = 15.f) {
     return sign * (value - dz) / (100.f - dz);
 }
 
-const std::array<PadButton, static_cast<usize>(PadButton::_Count)> Gamepad::allButtons = {
+const Array<PadButton, (usize) PadButton::_Count> Gamepad::allButtons = {
     PadButton::South, PadButton::East, PadButton::West, PadButton::North,
     PadButton::L1, PadButton::R1, PadButton::L2, PadButton::R2,
     PadButton::L3, PadButton::R3,
@@ -25,7 +25,7 @@ Gamepad::Gamepad() : id(sf::Joystick::Count), type(Type::Unknown), connected(fal
     scrollClock.restart();
 }
 
-Gamepad::Gamepad(unsigned int id) {
+Gamepad::Gamepad(uint id) {
     scrollClock.restart();
     connect(id);
 }
@@ -42,7 +42,7 @@ void Gamepad::disconnect() {
     }
 }
 
-void Gamepad::connect(unsigned int id) {
+void Gamepad::connect(uint id) {
     this->id = id;
     if (!sf::Joystick::isConnected(id)) {
         disconnect();

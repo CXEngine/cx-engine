@@ -1,9 +1,9 @@
 #pragma once
 
+#include <cx-engine/defs/types.hpp>
+
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/System/Clock.hpp>
-#include <cx-engine/defs/types.hpp>
-#include <array>
 
 namespace cx {
 

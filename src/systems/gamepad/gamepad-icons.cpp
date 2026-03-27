@@ -1,8 +1,7 @@
 #include <cx-engine/systems/gamepad/gamepad-icons.hpp>
+#include <cx-engine/systems/gamepad/error.hpp>
 
 #include <cx-engine/systems/assets/cxta.hpp>
-
-#include <stdexcept>
 
 namespace cx {
 
@@ -32,7 +31,7 @@ String GamepadIcons::buttonToString(PadButton button) const {
     case PadButton::_Count:
         break;
     }
-    throw std::runtime_error("Invalid PadButton for buttonToString");
+    throw GamepadError("Invalid PadButton for buttonToString");
 }
 
 Optional<sf::Sprite> GamepadIcons::getIcon(const Gamepad& gamepad, PadButton button) const {
@@ -58,13 +57,13 @@ Optional<sf::Sprite> GamepadIcons::getIcon(const GamepadManager& manager, PadBut
 
 const sf::Texture& GamepadIcons::getAtlas(Gamepad::Type type) const {
     switch (type) {
-        case Gamepad::Type::Xbox:
-            return xboxAtlas.getTexture();
-        case Gamepad::Type::PlayStation:
-            return psAtlas.getTexture();
-        case Gamepad::Type::Unknown:
-        default:
-            throw std::runtime_error("Unknown gamepad type has no atlas");
+    case Gamepad::Type::Xbox:
+        return xboxAtlas.getTexture();
+    case Gamepad::Type::PlayStation:
+        return psAtlas.getTexture();
+    case Gamepad::Type::Unknown:
+    default:
+        throw GamepadError("Unknown gamepad type has no atlas");
     }
 }
 

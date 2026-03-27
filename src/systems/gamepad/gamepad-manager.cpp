@@ -1,4 +1,5 @@
 #include <cx-engine/systems/gamepad/gamepad-manager.hpp>
+#include <cx-engine/systems/gamepad/error.hpp>
 
 namespace cx {
 
@@ -52,7 +53,7 @@ GamepadScanResult GamepadManager::scan() {
     sf::Joystick::update();
 
     connectedCount = 0;
-    for (unsigned int i = 0; i < sf::Joystick::Count; ++i) {
+    for (uint i = 0; i < sf::Joystick::Count; ++i) {
         bool isConnectedNow = sf::Joystick::isConnected(i);
         bool wasConnected = gamepads[i].isConnected();
 
@@ -78,7 +79,7 @@ GamepadScanResult GamepadManager::scan() {
         primaryGamepadId = -1;
     }
     if (primaryGamepadId == -1 && connectedCount > 0) {
-        for (unsigned int i = 0; i < sf::Joystick::Count; ++i) {
+        for (uint i = 0; i < sf::Joystick::Count; ++i) {
             if (gamepads[i].isConnected()) {
                 primaryGamepadId = i;
                 break;
@@ -96,14 +97,14 @@ void GamepadManager::update() {
     }
 }
 
-Gamepad& GamepadManager::get(unsigned int id) {
+Gamepad& GamepadManager::get(uint id) {
     if (id >= sf::Joystick::Count) {
         throw std::out_of_range("Gamepad ID out of range.");
     }
     return gamepads[id];
 }
 
-const Gamepad& GamepadManager::get(unsigned int id) const {
+const Gamepad& GamepadManager::get(uint id) const {
     if (id >= sf::Joystick::Count) {
         throw std::out_of_range("Gamepad ID out of range.");
     }
@@ -112,7 +113,7 @@ const Gamepad& GamepadManager::get(unsigned int id) const {
 
 Gamepad& GamepadManager::get() {
     if (!hasPrimary()) {
-        throw std::runtime_error("No primary gamepad is connected or set.");
+        throw GamepadError("No primary gamepad is connected or set.");
     }
     return gamepads[primaryGamepadId];
 }
@@ -128,7 +129,7 @@ bool GamepadManager::hasPrimary() const {
     return primaryGamepadId != -1;
 }
 
-void GamepadManager::setPrimary(unsigned int id) {
+void GamepadManager::setPrimary(uint id) {
     if (id < sf::Joystick::Count && gamepads[id].isConnected()) {
         primaryGamepadId = id;
     } else {

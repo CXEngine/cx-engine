@@ -6,7 +6,6 @@
 #include <cx-engine/utils/buf.hpp>
 
 #include <iterator>
-#include <stdexcept>
 
 namespace cx {
 
@@ -34,10 +33,6 @@ private:
     void advanceToNextConnected();
     Array<Gamepad, MaxGamepads>& container;
     usize index;
-};
-
-class GamepadError: public std::runtime_error {
-    using runtime_error::runtime_error;
 };
 
 struct GamepadScanResult {
