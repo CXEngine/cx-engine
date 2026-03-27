@@ -126,6 +126,9 @@ else
 	PC_CFLAGS_EXTRA :=
 endif
 
+PC_CFLAGS_EXTRA += -I${includedir}
+EXTERN_HEADERS_DIRS := toml++ xxhash incbin
+
 .PHONY: all clean dirs libs $(EXTERN_LIBS) install uninstall
 
 ifeq ($(LIBTYPE),auto)
@@ -195,6 +198,9 @@ install: all
 	done
 	@$(call CP,$(PKG_CONFIG_FILE),$(DESTDIR)$(PREFIX)/lib/pkgconfig/)
 	@$(call CP,include/cx-engine,$(DESTDIR)$(PREFIX)/include/)
+	@for dir in $(EXTERN_HEADERS_DIRS); do \
+		$(call CP,$(EXTERNAL_DIR)/$$dir,$(DESTDIR)$(PREFIX)/include/); \
+	done
 
 uninstall:
 	@echo "Uninstalling from $(DESTDIR)$(PREFIX)..."
@@ -202,6 +208,9 @@ uninstall:
 	@$(call RM,$(DESTDIR)$(PREFIX)/lib/lib$(LIB_NAME)$(LIB_EXT))
 	@$(call RM,$(DESTDIR)$(PREFIX)/lib/pkgconfig/$(LIB_NAME).pc)
 	@$(call RD,$(DESTDIR)$(PREFIX)/include/cx-engine)
+	@for dir in $(EXTERN_HEADERS_DIRS); do \
+		$(call RD,$(DESTDIR)$(PREFIX)/include/$$dir); \
+	done
 
 clean:
 	@$(call RD,build)
