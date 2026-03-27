@@ -4,7 +4,7 @@
 #include <cx-engine/systems/logging/logger.hpp>
 #include <cx-engine/defs/types.hpp>
 
-#include <incbin/incbin.h>
+#include <cx-engine/extern/incbin/incbin.h>
 
 namespace cx {
 

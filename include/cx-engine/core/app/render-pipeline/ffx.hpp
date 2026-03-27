@@ -2,7 +2,7 @@
 #include <cx-engine/core/app/render-pipeline.hpp>
 #include <cx-engine/systems/logging/logger.hpp>
 
-#include <incbin/incbin.h>
+#include <cx-engine/extern/incbin/incbin.h>
 
 namespace cx {
 

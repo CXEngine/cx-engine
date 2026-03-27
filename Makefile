@@ -39,7 +39,7 @@ else
 endif
 
 ROOT_DIR     := .
-EXTERNAL_DIR := extern
+EXTERNAL_DIR := include/cx-engine/extern
 
 BUILD_DIR  := build/$(BUILD)
 OUT_DIR    := out/$(BUILD)-$(LINK)
@@ -71,8 +71,8 @@ endif
 
 INCLUDES := \
 	-I$(ROOT_DIR)/include \
-	-I$(EXTERNAL_DIR)/ \
-	-I$(EXTERNAL_DIR)/rapidjson/include \
+	-I$(EXTERNAL_DIR) \
+	-I$(EXTERNAL_DIR)/rapidjson/include
 
 ifeq ($(PLATFORM),posix)
 ifeq ($(LINK),static)
@@ -126,8 +126,7 @@ else
 	PC_CFLAGS_EXTRA :=
 endif
 
-PC_CFLAGS_EXTRA += -I${includedir}
-EXTERN_HEADERS_DIRS := toml++ xxhash incbin
+PC_CFLAGS_EXTRA += -I${includedir}/cx-engine/extern -I${includedir}/cx-engine/extern/rapidjson/include
 
 .PHONY: all clean dirs libs $(EXTERN_LIBS) install uninstall
 
@@ -198,9 +197,6 @@ install: all
 	done
 	@$(call CP,$(PKG_CONFIG_FILE),$(DESTDIR)$(PREFIX)/lib/pkgconfig/)
 	@$(call CP,include/cx-engine,$(DESTDIR)$(PREFIX)/include/)
-	@for dir in $(EXTERN_HEADERS_DIRS); do \
-		$(call CP,$(EXTERNAL_DIR)/$$dir,$(DESTDIR)$(PREFIX)/include/); \
-	done
 
 uninstall:
 	@echo "Uninstalling from $(DESTDIR)$(PREFIX)..."
@@ -208,9 +204,6 @@ uninstall:
 	@$(call RM,$(DESTDIR)$(PREFIX)/lib/lib$(LIB_NAME)$(LIB_EXT))
 	@$(call RM,$(DESTDIR)$(PREFIX)/lib/pkgconfig/$(LIB_NAME).pc)
 	@$(call RD,$(DESTDIR)$(PREFIX)/include/cx-engine)
-	@for dir in $(EXTERN_HEADERS_DIRS); do \
-		$(call RD,$(DESTDIR)$(PREFIX)/include/$$dir); \
-	done
 
 clean:
 	@$(call RD,build)

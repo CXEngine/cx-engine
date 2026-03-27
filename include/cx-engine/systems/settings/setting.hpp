@@ -5,7 +5,7 @@
 #include <cx-engine/utils/bitflags.hpp>
 #include <cx-engine/utils/strconv.hpp>
 
-#include <toml++/toml.hpp>
+#include <cx-engine/extern/toml++/toml.hpp>
 
 namespace cx {
 

@@ -8,7 +8,7 @@
 #include <cx-engine/defs/platform.hpp>
 #include <cx-engine/defs/fs.hpp>
 
-#include <toml++/toml.hpp>
+#include <cx-engine/extern/toml++/toml.hpp>
 
 #include <variant>
 #include <utility>
