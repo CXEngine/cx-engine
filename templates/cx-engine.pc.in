@@ -1,0 +1,12 @@
+prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: cx-engine
+Description: CX Engine - C++ game engine
+Version: @VERSION@
+Requires: @REQUIRES@
+Libs: -L${libdir} -lcx-engine
+Libs.private: @LIBS_PRIVATE@
+Cflags: -I${includedir} @CFLAGS_EXTRA@

@@ -46,8 +46,10 @@ OUT_DIR    := out/$(BUILD)-$(LINK)
 ASSETS_DIR := assets
 
 LIB_NAME   := cx-engine
+VERSION    := 0.1.0
 STATIC_LIB := $(OUT_DIR)/lib$(LIB_NAME)$(STATIC_LIB_EXT)
 SHARED_LIB := $(OUT_DIR)/lib$(LIB_NAME)$(LIB_EXT)
+PKG_CONFIG_FILE := $(OUT_DIR)/$(LIB_NAME).pc
 
 CXXSTD := -std=c++20
 WARNINGS := -Wall
@@ -113,20 +115,31 @@ DEPS    := $(OBJECTS:.o=.d)
 
 PREFIX ?= /usr/local
 
+# pkg-config configuration
+ifeq ($(LINK),static)
+	PC_REQUIRES :=
+	PC_LIBS_PRIVATE := $(SFML_LIBS)
+	PC_CFLAGS_EXTRA := -DSFML_STATIC
+else
+	PC_REQUIRES := sfml-graphics sfml-window sfml-audio sfml-system
+	PC_LIBS_PRIVATE :=
+	PC_CFLAGS_EXTRA :=
+endif
+
 .PHONY: all clean dirs libs $(EXTERN_LIBS) install uninstall
 
 ifeq ($(LIBTYPE),auto)
     ifeq ($(LINK),static)
-        TARGETS := $(STATIC_LIB)
+        TARGETS := $(STATIC_LIB) $(PKG_CONFIG_FILE)
     else
-        TARGETS := $(STATIC_LIB) $(SHARED_LIB)
+        TARGETS := $(STATIC_LIB) $(SHARED_LIB) $(PKG_CONFIG_FILE)
     endif
 else ifeq ($(LIBTYPE),static)
-    TARGETS := $(STATIC_LIB)
+    TARGETS := $(STATIC_LIB) $(PKG_CONFIG_FILE)
 else ifeq ($(LIBTYPE),shared)
-    TARGETS := $(SHARED_LIB)
+    TARGETS := $(SHARED_LIB) $(PKG_CONFIG_FILE)
 else ifeq ($(LIBTYPE),both)
-    TARGETS := $(STATIC_LIB) $(SHARED_LIB)
+    TARGETS := $(STATIC_LIB) $(SHARED_LIB) $(PKG_CONFIG_FILE)
 else
     $(error Unknown LIBTYPE=$(LIBTYPE). Supported: auto, static, shared, both)
 endif
@@ -139,14 +152,32 @@ dirs:
 
 libs: $(EXTERN_LIBS)
 
+# Update EXTERN_LIBS to pass PIC flags
 $(EXTERN_LIBS):
-	$(MAKE) -C $(EXTERNAL_DIR)/$@ $(JFLAG) BUILD=$(BUILD)
+	$(MAKE) -C $(EXTERNAL_DIR)/$@ $(JFLAG) BUILD=$(BUILD) CFLAGS="$(CFLAGS) $(PIC)" CXXFLAGS="$(CXXFLAGS) $(PIC)"
 
-$(STATIC_LIB): $(OBJECTS)
-	$(AR) rcs $@ $(OBJECTS)
+$(STATIC_LIB): $(OBJECTS) libs
+	@echo "Merging $(STATIC_LIB) with internal dependencies..."
+	@echo "CREATE $@" > $@.mri
+	@echo "ADDMOD $(OBJECTS)" >> $@.mri
+	@for lib in $(EXTERN_LIBS); do \
+    	echo "ADDLIB $(EXTERNAL_DIR)/$$lib/lib$$lib$(STATIC_LIB_EXT)" >> $@.mri; \
+	done
+	@echo "SAVE" >> $@.mri
+	@echo "END" >> $@.mri
+	$(AR) -M < $@.mri
+	@$(call RM,$@.mri)
 
 $(SHARED_LIB): $(OBJECTS) libs
 	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJECTS) $(LDFLAGS) $(LDLIBS)
+
+$(OUT_DIR)/$(LIB_NAME).pc: templates/$(LIB_NAME).pc.in | dirs
+	sed -e 's|@PREFIX@|$(PREFIX)|g' \
+	    -e 's|@VERSION@|$(VERSION)|g' \
+	    -e 's|@REQUIRES@|$(PC_REQUIRES)|g' \
+	    -e 's|@LIBS_PRIVATE@|$(PC_LIBS_PRIVATE)|g' \
+	    -e 's|@CFLAGS_EXTRA@|$(PC_CFLAGS_EXTRA)|g' \
+	    $< > $@
 
 $(BUILD_DIR)/%.o: %.cpp
 	@$(call MD,$(@D))
@@ -157,16 +188,19 @@ $(BUILD_DIR)/%.o: %.cpp
 install: all
 	@echo "Installing to $(DESTDIR)$(PREFIX)..."
 	@$(call MD,$(DESTDIR)$(PREFIX)/lib)
+	@$(call MD,$(DESTDIR)$(PREFIX)/lib/pkgconfig)
 	@$(call MD,$(DESTDIR)$(PREFIX)/include)
-	@for target in $(TARGETS); do \
+	@for target in $(filter-out %.pc,$(TARGETS)); do \
 		$(call CP,$$target,$(DESTDIR)$(PREFIX)/lib/); \
 	done
+	@$(call CP,$(PKG_CONFIG_FILE),$(DESTDIR)$(PREFIX)/lib/pkgconfig/)
 	@$(call CP,include/cx-engine,$(DESTDIR)$(PREFIX)/include/)
 
 uninstall:
 	@echo "Uninstalling from $(DESTDIR)$(PREFIX)..."
 	@$(call RM,$(DESTDIR)$(PREFIX)/lib/lib$(LIB_NAME)$(STATIC_LIB_EXT))
 	@$(call RM,$(DESTDIR)$(PREFIX)/lib/lib$(LIB_NAME)$(LIB_EXT))
+	@$(call RM,$(DESTDIR)$(PREFIX)/lib/pkgconfig/$(LIB_NAME).pc)
 	@$(call RD,$(DESTDIR)$(PREFIX)/include/cx-engine)
 
 clean:
