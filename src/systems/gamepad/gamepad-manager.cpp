@@ -2,7 +2,7 @@
 
 namespace cx {
 
-GamepadIterator::GamepadIterator(std::array<Gamepad, sf::Joystick::Count>& gamepads, usize index)
+GamepadIterator::GamepadIterator(Array<Gamepad, sf::Joystick::Count>& gamepads, usize index)
     : container(gamepads), index(index) {
     if (this->index < sf::Joystick::Count && !container[this->index].isConnected()) {
         advanceToNextConnected();
@@ -60,7 +60,7 @@ GamepadScanResult GamepadManager::scan() {
             if (!wasConnected) {
                 gamepads[i].connect(i);
                 if (gamepads[i].isConnected()) {
-                    result.newlyConnected.push_back(i);
+                    result.newlyConnected.push(i);
                 }
             }
             if (gamepads[i].isConnected()) {
@@ -69,7 +69,7 @@ GamepadScanResult GamepadManager::scan() {
         } else {
             if (wasConnected) {
                 gamepads[i].disconnect();
-                result.newlyDisconnected.push_back(i);
+                result.newlyDisconnected.push(i);
             }
         }
     }

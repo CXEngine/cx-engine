@@ -9,6 +9,8 @@ namespace cx {
 
 using GamepadID = u8;
 
+constexpr GamepadID MaxGamepads = sf::Joystick::Count;
+
 enum class PadButton {
     South,
     East,
@@ -26,6 +28,7 @@ enum class PadButton {
     DpadDown,
     DpadLeft,
     DpadRight,
+
     _Count
 };
 
@@ -35,7 +38,9 @@ enum class PadAxis {
     RightX,
     RightY,
     L2,
-    R2
+    R2,
+
+    _Count
 };
 
 class Gamepad {
@@ -45,6 +50,7 @@ public:
         Xbox,
         PlayStation
     };
+
 
     explicit Gamepad(unsigned int id);
     Gamepad();
@@ -83,7 +89,7 @@ public:
     bool connected = false;
 
 private:
-    static const std::array<PadButton, static_cast<usize>(PadButton::_Count)> allButtons;
+    static const Array<PadButton, (usize) PadButton::_Count> allButtons;
 
     HashMap<PadButton, unsigned int> buttons;
     HashMap<PadAxis, sf::Joystick::Axis> axes;

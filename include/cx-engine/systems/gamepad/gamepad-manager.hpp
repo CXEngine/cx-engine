@@ -1,11 +1,10 @@
 #pragma once
 
 #include <cx-engine/systems/gamepad/gamepad.hpp>
-#include <cx-engine/defs/types.hpp>
 
-#include <array>
-#include <cstddef>
-#include <vector>
+#include <cx-engine/defs/types.hpp>
+#include <cx-engine/utils/buf.hpp>
+
 #include <iterator>
 #include <stdexcept>
 
@@ -21,7 +20,7 @@ public:
     using pointer = Gamepad*;
     using reference = Gamepad&;
 
-    GamepadIterator(std::array<Gamepad, sf::Joystick::Count>& gamepads, usize index);
+    GamepadIterator(Array<Gamepad, sf::Joystick::Count>& gamepads, usize index);
 
     reference operator*() const;
     pointer operator->() const;
@@ -33,7 +32,7 @@ public:
 
 private:
     void advanceToNextConnected();
-    std::array<Gamepad, sf::Joystick::Count>& container;
+    Array<Gamepad, MaxGamepads>& container;
     usize index;
 };
 
@@ -42,10 +41,8 @@ class GamepadError: public std::runtime_error {
 };
 
 struct GamepadScanResult {
-    // TODO: i think its way better to use Buf here
-    // since max gamepads count is very small number (likely 8)
-    Vec<uint> newlyConnected;
-    Vec<uint> newlyDisconnected;
+    Buf<uint, MaxGamepads> newlyConnected;
+    Buf<uint, MaxGamepads> newlyDisconnected;
 };
 
 class GamepadManager {
@@ -75,7 +72,7 @@ public:
     GamepadIterator end();
 
 private:
-    std::array<Gamepad, sf::Joystick::Count> gamepads;
+    Array<Gamepad, sf::Joystick::Count> gamepads;
     usize connectedCount;
     int primaryGamepadId;
 };
