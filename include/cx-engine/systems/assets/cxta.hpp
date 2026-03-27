@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 #include <cx-engine/defs/types.hpp>
-#include <xxhash/xxhash.h>
+#include <cx-engine/extern/xxhash/xxhash.h>
 
 namespace cx {
 
