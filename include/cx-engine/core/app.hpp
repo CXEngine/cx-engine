@@ -43,7 +43,6 @@ public:
     DynArena arena;
     MainLoop mainLoop;
 
-    CxpkArchive assets;
     GlobalSpriteAtlas globalSpriteAtlas;
 
     GamepadManager gamepads;

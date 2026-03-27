@@ -1,11 +1,14 @@
 #include <cx-engine/systems/gamepad/gamepad-icons.hpp>
+
+#include <cx-engine/systems/assets/cxta.hpp>
+
 #include <stdexcept>
 
 namespace cx {
 
-void GamepadIcons::load(const CxpkArchive& assets) {
-    xboxAtlas.load(assets.getBytes("images/icons/pad-buttons/xbox.tdta"));
-    psAtlas.load(assets.getBytes("images/icons/pad-buttons/ps.tdta"));
+void GamepadIcons::load(const TextureAtlas& xbox, const TextureAtlas& ps) {
+    xboxAtlas = xbox;
+    psAtlas = ps;
 }
 
 String GamepadIcons::buttonToString(PadButton button) const {
