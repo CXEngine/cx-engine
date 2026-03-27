@@ -1,0 +1,12 @@
+[submodule "lib/xxhash"]
+	path = lib/xxhash
+	url = https://github.com/Cyan4973/xxHash.git
+[submodule "lib/toml++"]
+	path = lib/toml++
+	url = https://github.com/marzer/tomlplusplus.git
+[submodule "lib/rapidjson"]
+	path = lib/rapidjson
+	url = https://github.com/Tencent/rapidjson.git
+[submodule "extern/incbin"]
+	path = extern/incbin
+	url = https://github.com/graphitemaster/incbin
