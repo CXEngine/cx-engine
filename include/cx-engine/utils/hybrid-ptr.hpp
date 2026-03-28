@@ -3,6 +3,8 @@
 #include <functional>
 #include <utility>
 
+namespace cx {
+
 /// @brief A smart pointer that can either borrow a raw pointer or take ownership of it
 ///
 /// HybridPtr provides a flexible way to manage memory where the ownership state can be 
@@ -196,17 +198,18 @@ public:
     }
 };
 
+} // namespace cx
 
 namespace std {
-    /// @brief Hash specialization for HybridPtr
+    /// @brief Hash specialization for @ref cx::HybridPtr
     /// @tparam T The type of the object pointed to
     template <class T>
-    struct hash<HybridPtr<T>> {
-        /// @brief Calculates the hash of the HybridPtr
+    struct hash<cx::HybridPtr<T>> {
+        /// @brief Calculates the hash of the @ref cx::HybridPtr
         /// @param x The HybridPtr to hash
         /// @return The calculated hash value
-        size_t operator()(const HybridPtr<T>& x) const {
+        size_t operator()(const cx::HybridPtr<T>& x) const {
             return hash<T*>()(x.get());
         }
     };
-}
+} // namespace std
