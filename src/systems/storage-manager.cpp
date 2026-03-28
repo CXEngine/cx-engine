@@ -4,12 +4,12 @@
 #include <filesystem>
 #include <cstdlib>
 
-#if IS_POSIX
+#if CX_PLATFORM_IS_POSIX
 #include <sys/types.h>
 #include <pwd.h>
 #endif
 
-#if IS_WINDOWS
+#if CX_PLATFORM_IS_WINDOWS
 #include <KnownFolders.h>
 #include <ShlObj.h>
 #include <objbase.h>
@@ -20,13 +20,13 @@ namespace cx {
 fs::path StorageManager::initConfigDir() {
     fs::path path;
 
-#   if IS_WINDOWS
+#   if CX_PLATFORM_IS_WINDOWS
         PWSTR widePath = nullptr;
         if (SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &widePath) == S_OK) {
             path = fs::path(widePath) / "Titandrop";
             CoTaskMemFree(widePath);
         }
-#   elif IS_MACOS
+#   elif CX_PLATFORM_IS_MACOS
         const char* home = getenv("HOME");
         if (home == nullptr) {
             struct passwd* pw = getpwuid(getuid());
@@ -70,13 +70,13 @@ fs::path StorageManager::initSettingsDir() {
 fs::path StorageManager::initSavesDir() {
     fs::path path;
 
-#   if IS_WINDOWS
+#   if CX_PLATFORM_IS_WINDOWS
         PWSTR widePath = nullptr;
         if (SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &widePath) == S_OK) {
             path = fs::path(widePath) / "Titandrop";
             CoTaskMemFree(widePath);
         }
-#   elif IS_MACOS
+#   elif CX_PLATFORM_IS_MACOS
         const char* home = getenv("HOME");
         if (!home) {
             if (passwd* pw = getpwuid(getuid())) {
@@ -113,13 +113,13 @@ fs::path StorageManager::initSavesDir() {
 fs::path StorageManager::initCacheDir() {
     fs::path path;
 
-#   if IS_WINDOWS
+#   if CX_PLATFORM_IS_WINDOWS
         PWSTR widePath = nullptr;
         if (SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &widePath) == S_OK) {
             path = fs::path(widePath) / "Titandrop" / "Cache";
             CoTaskMemFree(widePath);
         }
-#   elif IS_MACOS
+#   elif CX_PLATFORM_IS_MACOS
         const char* home = getenv("HOME");
         if (!home) {
             if (passwd* pw = getpwuid(getuid())) {

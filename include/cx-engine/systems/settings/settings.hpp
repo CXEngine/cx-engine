@@ -14,10 +14,10 @@
 #include <utility>
 #include <fstream>
 
-#if IS_WINDOWS
+#if CX_PLATFORM_IS_WINDOWS
     #include <windows.h>
     #include <shlobj.h>
-#elif IS_POSIX
+#elif CX_PLATFORM_IS_POSIX
     #include <sys/types.h>
     #include <pwd.h>
     #include <unistd.h>

@@ -1,7 +1,7 @@
 #pragma once
 #include <cx-engine/defs/platform.hpp>
 
-#if IS_WINDOWS
+#if CX_PLATFORM_IS_WINDOWS
 
 #include <cx-engine/defs/types.hpp>
 #include <windows.h>

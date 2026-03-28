@@ -1,7 +1,7 @@
 #pragma once
 #include <cx-engine/defs/platform.hpp>
 
-#if IS_POSIX
+#if CX_PLATFORM_IS_POSIX
 
 #include <cx-engine/systems/assets/cxpk/entry.hpp>
 #include <cx-engine/defs/types.hpp>
