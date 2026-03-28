@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cx-engine/ui/text/document.hpp>
 #include <cx-engine/defs/types.hpp>
 
@@ -43,6 +45,9 @@ public:
         return *this;
     }
 
+    TextDocument build() const& {
+        return output;
+    }
     TextDocument build() && {
         return std::move(output);
     }
