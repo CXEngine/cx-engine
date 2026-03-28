@@ -1,3 +1,4 @@
+#include <cx-engine/defs/errors.hpp>
 #include <cx-engine/defs/types.hpp>
 
 #include <SFML/System/Vector2.hpp>
@@ -9,6 +10,11 @@
 #include <type_traits>
 
 namespace cx {
+
+class StrconvError: public Exception {
+public:
+    using Exception::Exception;
+};
 
 template <typename Enum>
 Enum enumFromString(StringView s);
@@ -57,7 +63,7 @@ inline T parseComponent(StringView sv) {
     T value;
     auto [p, ec] = std::from_chars(sv.data(), sv.data() + sv.size(), value);
     if (ec != std::errc()) {
-        throw std::runtime_error("parse error: failed to convert component '" + String(sv) + "'");
+        throw StrconvError("parse error: failed to convert component '" + String(sv) + "'");
     }
     return value;
 }
@@ -67,30 +73,30 @@ T fromString(StringView s) {
     if constexpr (std::is_same_v<T, bool>) {
         if (s == "true" || s == "1") return true;
         if (s == "false" || s == "0") return false;
-        throw std::runtime_error("Failed to convert string to bool: '" + String(s) + "'");
+        throw StrconvError("Failed to convert string to bool: '" + String(s) + "'");
     } else if constexpr (std::is_integral_v<T> || std::is_floating_point_v<T>) {
         T value;
         auto [p, ec] = std::from_chars(s.data(), s.data() + s.size(), value);
-        if (ec != std::errc()) throw std::runtime_error("parse error");
+        if (ec != std::errc()) throw StrconvError("parse error");
         return value;
     } else if constexpr (std::is_enum_v<T>) {
         return cx::enumFromString<T>(s);
     } else if constexpr (detail::IsSfVector<T>) {
         Array<StringView, 2> tokens;
         usize numToks = splitStringView(s, ',', tokens.begin());
-        if (numToks != 2) throw std::runtime_error("Failed to parse sf::Vector2<T>: expected 'x,y'");
+        if (numToks != 2) throw StrconvError("Failed to parse sf::Vector2<T>: expected 'x,y'");
         using ValueType = typename T::value_type;
         return T{parseComponent<ValueType>(tokens[0]), parseComponent<ValueType>(tokens[1])};
     } else if constexpr (detail::IsSfRect<T>) {
         Array<StringView, 4> tokens;
         usize numToks = splitStringView(s, ',', tokens.begin());
-        if (numToks != 4) throw std::runtime_error("Failed to parse sf::Rect<T>: expected 'left,top,width,height'");
+        if (numToks != 4) throw StrconvError("Failed to parse sf::Rect<T>: expected 'left,top,width,height'");
         using ValueType = typename T::value_type;
         return T{parseComponent<ValueType>(tokens[0]), parseComponent<ValueType>(tokens[1]), parseComponent<ValueType>(tokens[2]), parseComponent<ValueType>(tokens[3])};
     } else if constexpr (std::is_same_v<T, sf::Color>) {
         Array<StringView, 4> tokens;
         usize numToks = splitStringView(s, ',', tokens.begin());
-        if (numToks < 3 || numToks > 4) throw std::runtime_error("Failed to parse sf::Color: expected 'r,g,b' or 'r,g,b,a'");
+        if (numToks < 3 || numToks > 4) throw StrconvError("Failed to parse sf::Color: expected 'r,g,b' or 'r,g,b,a'");
         u8 r = parseComponent<u8>(tokens[0]);
         u8 g = parseComponent<u8>(tokens[1]);
         u8 b = parseComponent<u8>(tokens[2]);
@@ -108,7 +114,7 @@ T fromString(StringView s) {
         T value;
         iss >> value;
         if (iss.fail() || iss.bad()) {
-            throw std::runtime_error("Failed to convert string to type: '" + String(s) + "'");
+            throw StrconvError("Failed to convert string to type: '" + String(s) + "'");
         }
         return value;
     }
@@ -126,7 +132,7 @@ String toString(const T& v) {
         return toString(v.r) + "," + toString(v.g) + "," + toString(v.b) + "," + toString(v.a);
     } else if constexpr (detail::IsOptional<T>) {
         if (!v.has_value()) {
-            return "";
+            return "nullopt";
         }
         return toString(v.value());
     }
