@@ -1,18 +1,19 @@
 #pragma once
 
+#include <cx-engine/defs/errors.hpp>
+#include <cx-engine/defs/types.hpp>
+
 #include <SFML/Graphics.hpp>
 
 #include <filesystem>
 #include <stdexcept>
 #include <cstdint>
 
-#include <cx-engine/defs/types.hpp>
-
 namespace cx {
 
-class AnimationLoadError: public std::runtime_error {
+class AnimationLoadError: public Exception {
 public:
-    using std::runtime_error::runtime_error;
+    using Exception::Exception;
 };
 
 struct AnimationPage {

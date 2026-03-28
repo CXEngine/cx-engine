@@ -15,17 +15,17 @@ namespace {
 void ScaledImage::open(const std::filesystem::path& file) {
     std::ifstream ifs(file, std::ios::binary | std::ios::ate);
     if (!ifs)
-        throw CxsiLoadError("failed to open CXSI file: " + file.string());
+        throw ScaledImageLoadError("failed to open CXSI file: " + file.string());
 
     usize size = ifs.tellg();
     if (size <= 0)
-        throw CxsiLoadError("expected CXSI data, found empty file: " + file.string());
+        throw ScaledImageLoadError("expected CXSI data, found empty file: " + file.string());
 
     ifs.seekg(0);
 
     Vec<byte> buffer(static_cast<usize>(size));
     if (!ifs.read(reinterpret_cast<char*>(buffer.data()), size))
-        throw CxsiLoadError("failed to read CXSI file: " + file.string());
+        throw ScaledImageLoadError("failed to read CXSI file: " + file.string());
 
     load(Slice<const byte>(buffer));
 }
@@ -38,12 +38,12 @@ void ScaledImage::load(Slice<const byte> data) {
     const byte* base = data.data();
 
     if (total < 6) // magic (4) + variant count (2)
-        throw CxsiLoadError("CXSI header truncated");
+        throw ScaledImageLoadError("CXSI header truncated");
 
     usize idx = 0;
 
     if (memcmp(base + idx, CXSI_MAGIC, 4) != 0)
-        throw CxsiLoadError("Invalid CXSI magic");
+        throw ScaledImageLoadError("Invalid CXSI magic");
     idx += 4;
 
     u16 variantCount = 0;
@@ -57,7 +57,7 @@ void ScaledImage::load(Slice<const byte> data) {
 
     for (u16 i = 0; i < variantCount; ++i) {
         if (idx + sizeof(u16) + sizeof(u16) + sizeof(u32) > total)
-            throw CxsiLoadError("CXSI variant header truncated");
+            throw ScaledImageLoadError("CXSI variant header truncated");
 
         u16 w = 0;
         u16 h = 0;
@@ -68,14 +68,14 @@ void ScaledImage::load(Slice<const byte> data) {
         memcpy(&pngSize, base + idx, sizeof(u32)); idx += sizeof(u32);
 
         if (idx + static_cast<usize>(pngSize) > total)
-            throw CxsiLoadError("CXSI PNG data out of bounds");
+            throw ScaledImageLoadError("CXSI PNG data out of bounds");
 
         const void* pngPtr = base + idx;
 
         sf::Texture tex;
         tex.setSmooth(false);
         if (!tex.loadFromMemory(pngPtr, static_cast<usize>(pngSize)))
-            throw CxsiLoadError("Failed to load CXSI PNG for variant " + std::to_string(i));
+            throw ScaledImageLoadError("Failed to load CXSI PNG for variant " + std::to_string(i));
 
         variants.push_back(std::move(tex));
         dims.push_back({ w, h });
@@ -84,16 +84,16 @@ void ScaledImage::load(Slice<const byte> data) {
     }
 }
 
-CxsiVariant ScaledImage::getVariant(u16 index) const {
+ScaledImageVariant ScaledImage::getVariant(u16 index) const {
     if (index >= variants.size())
-        throw CxsiLoadError("Variant index out of range");
+        throw ScaledImageLoadError("Variant index out of range");
 
     const sf::Texture& tref = variants[index];
-    return CxsiVariant{ tref, dims[index].first, dims[index].second };
+    return ScaledImageVariant{ tref, dims[index].first, dims[index].second };
 }
 
 sf::Sprite ScaledImage::getSprite(u16 index) const {
-    CxsiVariant v = getVariant(index);
+    ScaledImageVariant v = getVariant(index);
     sf::Sprite s(v.texture);
     s.setPosition(sf::Vector2f(0.f, 0.f));
     return s;
@@ -101,10 +101,10 @@ sf::Sprite ScaledImage::getSprite(u16 index) const {
 
 u16 ScaledImage::chooseVariantIndexForSize(u32 spriteWidth, u32 spriteHeight) const {
     if (getVariantCount() == 0)
-        throw CxsiLoadError("ScaledImage has no variants");
+        throw ScaledImageLoadError("ScaledImage has no variants");
 
     if (spriteWidth == 0 || spriteHeight == 0)
-        throw CxsiLoadError("Invalid sprite size");
+        throw ScaledImageLoadError("Invalid sprite size");
 
     auto computeScale = [](u32 reqW, u32 reqH, u16 w, u16 h) -> double {
         double fx = static_cast<double>(reqW) / static_cast<double>(w);
@@ -158,7 +158,7 @@ u16 ScaledImage::chooseVariantIndexForSize(u32 spriteWidth, u32 spriteHeight) co
     return static_cast<u16>(bestIndex);
 }
 
-CxsiVariant ScaledImage::chooseVariantForSize(u32 spriteWidth, u32 spriteHeight) const {
+ScaledImageVariant ScaledImage::chooseVariantForSize(u32 spriteWidth, u32 spriteHeight) const {
     return getVariant(chooseVariantIndexForSize(spriteWidth, spriteHeight));
 }
 
@@ -168,7 +168,7 @@ const sf::Texture& ScaledImage::chooseTextureForSize(u32 spriteWidth, u32 sprite
 }
 
 sf::Sprite ScaledImage::getSpriteForSize(u32 spriteWidth, u32 spriteHeight) const {
-    CxsiVariant v = chooseVariantForSize(spriteWidth, spriteHeight);
+    ScaledImageVariant v = chooseVariantForSize(spriteWidth, spriteHeight);
     sf::Sprite s(v.texture);
 
     if (v.width != 0 && v.height != 0) {

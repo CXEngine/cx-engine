@@ -1,17 +1,19 @@
 #pragma once
 
+#include <cx-engine/defs/errors.hpp>
+#include <cx-engine/defs/types.hpp>
+
 #include <SFML/Graphics.hpp>
 
 #include <filesystem>
 #include <stdexcept>
 
-#include <cx-engine/defs/types.hpp>
 #include <cx-engine/extern/xxhash/xxhash.h>
 
 namespace cx {
 
-struct TextureAtlasLoadError: public std::runtime_error {
-    using std::runtime_error::runtime_error;
+struct TextureAtlasLoadError: public Exception {
+    using Exception::Exception;
 };
 
 class TextureAtlas {

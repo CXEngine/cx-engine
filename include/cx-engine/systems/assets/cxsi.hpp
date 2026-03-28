@@ -1,11 +1,13 @@
 #pragma once
 
+#include <cx-engine/defs/errors.hpp>
+#include <cx-engine/defs/types.hpp>
+
 #include <SFML/Graphics.hpp>
 
 #include <filesystem>
 #include <stdexcept>
 
-#include <cx-engine/defs/types.hpp>
 
 namespace cx {
 
@@ -22,14 +24,14 @@ Format:
   - png_data (RGBA PNG)
 */
 
-class CxsiLoadError: public std::runtime_error {
+class ScaledImageLoadError: public Exception {
 public:
-    using std::runtime_error::runtime_error;
+    using Exception::Exception;
 };
 
 // A single variant inside a CXSI file. The variant refers to an entire texture
 // (no sub-rect needed)
-struct CxsiVariant {
+struct ScaledImageVariant {
     const sf::Texture& texture;
     u16 width = 0;
     u16 height = 0;
@@ -54,11 +56,11 @@ public:
 
     inline usize getVariantCount() const noexcept { return variants.size(); }
 
-    CxsiVariant getVariant(u16 index) const;
+    ScaledImageVariant getVariant(u16 index) const;
     sf::Sprite getSprite(u16 index) const;
 
     u16 chooseVariantIndexForSize(u32 spriteWidth, u32 spriteHeight) const;
-    CxsiVariant chooseVariantForSize(u32 spriteWidth, u32 spriteHeight) const;
+    ScaledImageVariant chooseVariantForSize(u32 spriteWidth, u32 spriteHeight) const;
     const sf::Texture& chooseTextureForSize(u32 spriteWidth, u32 spriteHeight) const;
     sf::Sprite getSpriteForSize(u32 spriteWidth, u32 spriteHeight) const;
 };

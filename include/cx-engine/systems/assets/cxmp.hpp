@@ -1,16 +1,17 @@
 #pragma once
 
+#include <cx-engine/defs/errors.hpp>
 #include <cx-engine/defs/types.hpp>
+
 #include <SFML/Graphics.hpp>
+
 #include <filesystem>
 #include <stdexcept>
-#include <memory>
-#include <optional>
 
 namespace cx {
 
-struct TileMapLoadError: public std::runtime_error {
-    using std::runtime_error::runtime_error;
+struct TileMapLoadError: public Exception {
+    using Exception::Exception;
 };
 
 #pragma pack(push, 1)

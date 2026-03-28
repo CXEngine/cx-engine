@@ -3,9 +3,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Exception.hpp>
 
-#include <fstream>
 #include <cstring>
-#include <utility>
 
 namespace cx {
 
