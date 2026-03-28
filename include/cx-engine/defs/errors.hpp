@@ -23,6 +23,7 @@ class EngineException: public Exception {
     FUNC(KeyNotFoundException, Exception);          \
     FUNC(OverflowException, Exception);             \
     FUNC(InvalidArgumentException, Exception);      \
+    FUNC(EmptyCollectionException, Exception);      \
                                                     \
     FUNC(EngineGraphicsException, EngineException); \
     FUNC(EngineLogicException, EngineException);    \

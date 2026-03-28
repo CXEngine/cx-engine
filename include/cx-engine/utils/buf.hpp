@@ -5,19 +5,9 @@
 
 #include <new>
 #include <utility>
-#include <stdexcept>
 #include <iterator>
 
 namespace cx {
-
-/// @brief Exception thrown when a Buf operation would exceed its fixed capacity.
-class BufOverflowError: public Exception {
-public:
-    using Exception::Exception;
-
-    /// @brief Creates a new BufOverflowError with a default message.
-    BufOverflowError() : BufOverflowError("overflow") {}
-};
 
 /// @brief A fixed-capacity buffer that stores elements inline.
 ///
@@ -53,10 +43,10 @@ public:
 
     /// @brief Creates a buffer from an initializer list
     /// @param initList List of elements to initialize the buffer with
-    /// @throws BufOverflowError if the initializer list size exceeds N
+    /// @throws OverflowException if the initializer list size exceeds N
     Buf(InitList<T> initList) : elemCount(0) {
         if (initList.size() > N) {
-            throw BufOverflowError("init list too large for Buf");
+            throw OverflowException("init list too large for Buf");
         }
         for (const T& item : initList) {
             emplace(item);
@@ -114,11 +104,11 @@ public:
     /// @tparam Args Argument types for the element constructor
     /// @param args Arguments passed to the element constructor
     /// @return Reference to the newly created element
-    /// @throws BufOverflowError if the buffer is full
+    /// @throws OverflowException if the buffer is full
     template <typename... Args>
     T& emplace(Args&&... args) {
         if (elemCount >= N)
-            throw BufOverflowError();
+            throw OverflowException("Buf overflow");
         T* p = new (ptr(elemCount)) T(std::forward<Args>(args)...);
         ++elemCount;
         return *p;
@@ -164,7 +154,7 @@ public:
     /// @throws std::out_of_range if the buffer is empty
     T pop() {
         if (isEmpty()) {
-            throw std::out_of_range("pop() called on empty Buf");
+            throw EmptyCollectionException("pop() called on empty Buf");
         }
         --elemCount;
         T value = std::move(*ptr(elemCount));
