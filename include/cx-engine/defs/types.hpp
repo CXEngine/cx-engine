@@ -42,6 +42,9 @@ struct NoneType {};
 constexpr NoneType None;
 
 template <typename T>
+using RefWrapper = std::reference_wrapper<T>;
+
+template <typename T>
 using Vec = std::vector<T>;
 
 template <typename T>

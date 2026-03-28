@@ -19,6 +19,10 @@ public:
         currentStyle = style;
         return *this;
     }
+    TextDocumentBuilder& setFont(const sf::Font& font) {
+        currentStyle.font = font;
+        return *this;
+    }
     TextDocumentBuilder& setColor(sf::Color color) {
         currentStyle.color = color;
         return *this;
