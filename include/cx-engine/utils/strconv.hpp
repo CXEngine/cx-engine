@@ -1,3 +1,8 @@
+/**
+ * @file strconv.hpp
+ * @brief String conversion utilities for various types.
+ */
+
 #pragma once
 
 #include <cx-engine/defs/errors.hpp>
@@ -13,14 +18,17 @@
 
 namespace cx {
 
+/// @brief Exception thrown when a string conversion fails.
 class StrconvError: public Exception {
 public:
     using Exception::Exception;
 };
 
+/// @brief Forward declaration for enum conversion (defined in enumstr.hpp).
 template <typename Enum>
 Enum enumFromString(StringView s);
 
+/// @brief Forward declaration for enum conversion (defined in enumstr.hpp).
 template <typename Enum>
 String enumToString(Enum value);
 
@@ -28,20 +36,29 @@ inline namespace strconv {
 
 namespace detail {
 
+/// @brief Trait to check if a type is an sf::Vector2.
 template <typename T> struct IsSfVectorType: FalseType {};
 template <typename U> struct IsSfVectorType<sf::Vector2<U>>: TrueType {};
 template <typename T> constexpr bool IsSfVector = IsSfVectorType<T>::value;
 
+/// @brief Trait to check if a type is an sf::Rect.
 template <typename T> struct IsSfRectType: FalseType {};
 template <typename U> struct IsSfRectType<sf::Rect<U>>: TrueType {};
 template <typename T> constexpr bool IsSfRect = IsSfRectType<T>::value;
 
+/// @brief Trait to check if a type is an Optional.
 template <typename T> struct IsOptionalType: FalseType {};
 template <typename T> struct IsOptionalType<Optional<T>>: TrueType {};
 template <typename T> constexpr bool IsOptional = IsOptionalType<T>::value;
 
 } // namespace detail
 
+/// @brief Splits a string view into parts based on a delimiter
+/// @tparam OutputIt Type of the output iterator
+/// @param s The string view to split
+/// @param delimiter The character to split by
+/// @param out The output iterator to write parts to
+/// @return Number of parts found
 template <typename OutputIt>
 usize splitStringView(StringView s, char delimiter, OutputIt out) {
     usize count = 0;
@@ -60,6 +77,11 @@ usize splitStringView(StringView s, char delimiter, OutputIt out) {
     return count;
 }
 
+/// @brief Parses a single numeric component from a string view
+/// @tparam T Numeric type to parse
+/// @param sv The string view to parse from
+/// @return The parsed value
+/// @throws StrconvError if parsing fails
 template <typename T>
 inline T parseComponent(StringView sv) {
     T value;
@@ -70,6 +92,11 @@ inline T parseComponent(StringView sv) {
     return value;
 }
 
+/// @brief Converts a string to a value of the specified type
+/// @tparam T The target type
+/// @param s The string view to convert
+/// @return The converted value
+/// @throws StrconvError if the conversion fails
 template <typename T>
 T fromString(StringView s) {
     if constexpr (std::is_same_v<T, bool>) {
@@ -122,6 +149,10 @@ T fromString(StringView s) {
     }
 }
 
+/// @brief Converts a value to its string representation
+/// @tparam T The source type
+/// @param v The value to convert
+/// @return String representation of the value
 template <typename T>
 String toString(const T& v) {
     if constexpr (std::is_enum_v<T>) {
