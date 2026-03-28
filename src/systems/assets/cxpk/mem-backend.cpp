@@ -25,7 +25,7 @@ void CxpkBackendImpl::loadFromFile(const std::filesystem::path& path) {
 
     fileSize = data.size();
 
-    ::parseCxpkHeader(data.data(), fileSize, entries);
+    parseCxpkHeader(data.data(), fileSize, entries);
     openFlag = true;
 }
 

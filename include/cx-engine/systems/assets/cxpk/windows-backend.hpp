@@ -4,9 +4,10 @@
 #if CX_PLATFORM_IS_WINDOWS
 
 #include <cx-engine/defs/types.hpp>
-#include <windows.h>
-#include <vector>
-#include <filesystem>
+#include <cx-engine/defs/fs.hpp>
+
+#include <cx-engine/defs/compat/winapi.hpp>
+
 #include <cx-engine/systems/assets/cxpk/entry.hpp>
 
 namespace cx {
@@ -15,7 +16,7 @@ struct CxpkBackendImpl {
     CxpkBackendImpl() noexcept;
     ~CxpkBackendImpl() noexcept;
 
-    void loadFromFile(const std::filesystem::path& path);
+    void loadFromFile(const fs::path& path);
 
     bool isOpen() const noexcept;
     bool has(StringView path) const;

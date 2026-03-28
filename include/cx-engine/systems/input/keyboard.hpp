@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cx-engine/defs/types.hpp>
+
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Event.hpp>
 

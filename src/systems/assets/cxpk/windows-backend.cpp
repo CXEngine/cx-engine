@@ -2,13 +2,14 @@
 #if CX_PLATFORM_IS_WINDOWS
 
 #include <cx-engine/systems/assets/cxpk.hpp>
-#include "windows-backend.hpp"
+#include <cx-engine/systems/assets/cxpk/windows-backend.hpp>
 #include <cx-engine/systems/assets/cxpk/header-parser.hpp>
+
+#include <cx-engine/defs/fs.hpp>
 
 #include <windows.h>
 #include <vector>
 #include <cstring>
-#include <filesystem>
 
 namespace cx {
 
@@ -39,7 +40,7 @@ void CxpkBackendImpl::closeImpl() noexcept {
     openFlag = false;
 }
 
-void CxpkBackendImpl::loadFromFile(const std::filesystem::path& path) {
+void CxpkBackendImpl::loadFromFile(const fs::path& path) {
     closeImpl();
 
     std::wstring wpath = path.wstring();
@@ -80,7 +81,7 @@ void CxpkBackendImpl::loadFromFile(const std::filesystem::path& path) {
     fileSize = static_cast<usize>(sizeLi.QuadPart);
     data = reinterpret_cast<const byte*>(view);
 
-    ::parseCxpkHeader(data, fileSize, entries);
+    parseCxpkHeader(data, fileSize, entries);
     openFlag = true;
 }
 
@@ -98,11 +99,11 @@ Slice<const byte> CxpkBackendImpl::getBytes(StringView path) const {
 
     const auto it = entries.find(path);
     if (it == entries.end())
-        throw CxpkLoadError("asset not found: " + path);
+        throw CxpkLoadError(String("asset not found: ") + String(path));
 
     const CxpkEntry& e = it->second;
     if (static_cast<usize>(e.offset) + static_cast<usize>(e.size) > fileSize)
-        throw CxpkLoadError("corrupted CXPK entry: " + path);
+        throw CxpkLoadError(String("corrupted CXPK entry: ") + String(path));
 
     return Slice(data + e.offset, e.size);
 }
