@@ -64,11 +64,14 @@ public:
     /// @brief Default destructor.
     ~HybridStr() = default;
 
-    // move only
-    HybridStr(const HybridStr&) = delete;
-    HybridStr& operator=(const HybridStr&) = delete;
+    /// @brief Copy constructor.
+    HybridStr(const HybridStr& other) = default;
+    /// @brief Copy assignment operator.
+    HybridStr& operator=(const HybridStr& other) = default;
 
+    /// @brief Move constructor.
     HybridStr(HybridStr&& other) noexcept = default;
+    /// @brief Move assignment operator.
     HybridStr& operator=(HybridStr&& other) noexcept = default;
 
     /// @brief Checks if this HybridStr owns its content (i.e., stores a String)
