@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Graphics/Font.hpp>
 #include <cx-engine/defs/types.hpp>
 
 #include <cx-engine/core/app/render-pipeline.hpp>
@@ -47,6 +48,8 @@ public:
 
     GamepadManager gamepads;
     GamepadIcons gamepadIcons;
+
+    sf::Font defaultFont;
 
     StorageManager storage;
 

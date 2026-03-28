@@ -8,6 +8,8 @@
 
 #include <cx-engine/defs/types.hpp>
 
+INCBIN(DejaVuSansMono, "assets/cx-engine/fonts/DejaVuSansMono.ttf");
+
 namespace cx {
 
 App::App(String name)
@@ -18,6 +20,9 @@ App::App(String name)
 {
     Keyboard::init();
     Logger::init(storage.getLogsDir());
+    if (!defaultFont.openFromMemory(gDejaVuSansMonoData, gDejaVuSansMonoSize)) {
+        Logger::err("Failed to load default font");
+    }
 }
 
 App::~App() {}
