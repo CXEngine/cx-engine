@@ -131,7 +131,7 @@ endif
 
 PC_CFLAGS_EXTRA += -I${includedir}/cx-engine/extern -I${includedir}/cx-engine/extern/rapidjson/include
 
-.PHONY: all clean dirs libs docs $(EXTERN_LIBS) install uninstall
+.PHONY: all clean dirs libs docs $(EXTERN_LIBS) install uninstall examples clean-examples
 
 ifeq ($(LIBTYPE),auto)
     ifeq ($(LINK),static)
@@ -149,7 +149,9 @@ else
     $(error Unknown LIBTYPE=$(LIBTYPE). Supported: auto, static, shared, both)
 endif
 
-all: dirs libs $(TARGETS) docs
+include examples/build.mk
+
+all: dirs libs $(TARGETS) docs examples
 
 dirs:
 	@$(call MD,$(BUILD_DIR))
@@ -211,7 +213,7 @@ uninstall:
 	@$(call RM,$(DESTDIR)$(PREFIX)/lib/pkgconfig/$(LIB_NAME).pc)
 	@$(call RD,$(DESTDIR)$(PREFIX)/include/cx-engine)
 
-clean:
+clean: clean-examples
 	@$(call RD,build)
 	@$(call RD,out)
 	@for lib in $(EXTERN_LIBS); do \
