@@ -1,3 +1,4 @@
+#include <cx-engine/utils/hybrid-str.hpp>
 #include <cx-engine/defs/types.hpp>
 
 #include <SFML/Graphics/Color.hpp>
@@ -12,7 +13,7 @@ struct TextStyle {
 };
 
 struct TextSpan {
-    StringView text;
+    HybridStr text;
     TextStyle style;
 };
 
