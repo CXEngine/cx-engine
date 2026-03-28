@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cx-engine/utils/strconv.hpp>
+
 #include <cx-engine/defs/types.hpp>
 
 namespace cx {
@@ -39,7 +41,7 @@ String enumToString(Enum value) {
     if (idx < names.size()) {
         return String(names[idx]);
     }
-    throw std::runtime_error("Failed to convert enum to string: invalid enum value");
+    throw StrconvError("Failed to convert enum to string: invalid enum value");
 }
 
 template <typename Enum>
@@ -49,7 +51,7 @@ Enum enumFromString(StringView s) {
     if (it != names.end()) {
         return static_cast<Enum>(std::distance(names.begin(), it));
     }
-    throw std::runtime_error("Failed to convert string to enum: '" + String(s) + "'");
+    throw StrconvError("Failed to convert string to enum: '" + String(s) + "'");
 }
 
 } // namespace cx
