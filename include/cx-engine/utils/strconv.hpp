@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cx-engine/defs/errors.hpp>
 #include <cx-engine/defs/types.hpp>
 
