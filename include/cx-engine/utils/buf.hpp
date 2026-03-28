@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cx-engine/defs/errors.hpp>
 #include <cx-engine/defs/types.hpp>
 
 #include <new>
@@ -9,9 +10,9 @@
 
 namespace cx {
 
-class BufOverflowError: public std::runtime_error {
+class BufOverflowError: public Exception {
 public:
-    using std::runtime_error::runtime_error;
+    using Exception::Exception;
 
     BufOverflowError() : BufOverflowError("overflow") {}
 };
