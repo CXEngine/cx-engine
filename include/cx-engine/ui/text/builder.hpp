@@ -33,7 +33,7 @@ public:
     }
     TextDocumentBuilder& setItalic(bool enabled) {
         currentStyle.italic = enabled;
-        return * this;
+        return *this;
     }
     TextDocumentBuilder& setBold(bool enabled) {
         currentStyle.bold = enabled;
@@ -41,11 +41,11 @@ public:
     }
 
     TextDocumentBuilder& addPart(HybridStr text) {
-        output.spans.push_back({ .text = std::move(text), .style = currentStyle });
+        output.add({ .text = std::move(text), .style = currentStyle });
         return *this;
     }
     TextDocumentBuilder& addPart(HybridStr text, TextStyle override) {
-        output.spans.push_back({ .text = std::move(text), .style = override });
+        output.add({ .text = std::move(text), .style = override });
         return *this;
     }
 

@@ -22,8 +22,16 @@ struct TextSpan {
     TextStyle style;
 };
 
-struct TextDocument {
+class TextDocument {
+public:
     Vec<TextSpan> spans;
+
+    void add(TextSpan span) {
+        spans.push_back(std::move(span));
+    }
+    void extend(TextDocument doc) {
+        spans.insert(spans.end(), doc.spans.begin(), doc.spans.end());
+    }
 };
 
 } // namespace cx::ui
