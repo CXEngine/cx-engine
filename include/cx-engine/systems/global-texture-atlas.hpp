@@ -1,10 +1,10 @@
 #pragma once
 
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-
-#include <stdexcept>
+#include <cx-engine/defs/errors.hpp>
 #include <cx-engine/defs/types.hpp>
+
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 namespace cx {
 
@@ -17,8 +17,8 @@ private:
     explicit GlobalSpriteID(usize value) : value(value) {}
 };
 
-class GlobalSpriteAtlasError: public std::runtime_error {
-    using std::runtime_error::runtime_error;
+class GlobalSpriteAtlasError: public Exception {
+    using Exception::Exception;
 };
 
 class GlobalSpriteAtlas {
