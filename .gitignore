@@ -50,3 +50,6 @@ out/
 # IDEs settings
 .vscode/
 compile_flags.txt
+
+# Doxygen documentation
+docs/generated/

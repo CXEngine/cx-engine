@@ -1,5 +1,6 @@
 CXX ?= g++
 AR ?= ar
+DOXYGEN ?= doxygen
 BUILD ?= release
 LINK ?= dynamic
 LIBTYPE ?= auto
@@ -40,6 +41,8 @@ endif
 
 ROOT_DIR     := .
 EXTERNAL_DIR := include/cx-engine/extern
+
+DOXYFILE 	 := $(ROOT_DIR)/docs/Doxyfile
 
 BUILD_DIR  := build/$(BUILD)
 OUT_DIR    := out/$(BUILD)-$(LINK)
@@ -128,7 +131,7 @@ endif
 
 PC_CFLAGS_EXTRA += -I${includedir}/cx-engine/extern -I${includedir}/cx-engine/extern/rapidjson/include
 
-.PHONY: all clean dirs libs $(EXTERN_LIBS) install uninstall
+.PHONY: all clean dirs libs docs $(EXTERN_LIBS) install uninstall
 
 ifeq ($(LIBTYPE),auto)
     ifeq ($(LINK),static)
@@ -146,7 +149,7 @@ else
     $(error Unknown LIBTYPE=$(LIBTYPE). Supported: auto, static, shared, both)
 endif
 
-all: dirs libs $(TARGETS)
+all: dirs libs $(TARGETS) docs
 
 dirs:
 	@$(call MD,$(BUILD_DIR))
@@ -186,6 +189,9 @@ $(BUILD_DIR)/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -MMD -MP -c $< -o $@
 
 -include $(DEPS)
+
+docs:
+	$(DOXYGEN) $(DOXYFILE)
 
 install: all
 	@echo "Installing to $(DESTDIR)$(PREFIX)..."
