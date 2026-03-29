@@ -26,6 +26,15 @@ public:
     uint getMsaaLevel() const override { return 4; }
 };
 
+cx::String repeat(cx::StringView s, cx::usize times) {
+    cx::String result;
+    result.reserve(s.length() * times);
+    for (cx::usize i = 0; i < times; ++i) {
+        result += s;
+    }
+    return result;
+}
+
 class Game: public cx::App {
 public:
     cx::ui::TextBrowser browser;
@@ -38,7 +47,8 @@ public:
             cx::Logger::err("Failed to load Quicksand Font");
         }
 
-        browser.setInputMode(cx::UiInputMode::All);
+        browser.setWrapMode(cx::ui::TextWrap::CharWrap);
+        browser.setMaxWidth(config.getTargetResolution().x);
 
         cx::ui::TextDocument doc = cx::ui::TextDocumentBuilder({ .font = defaultFont, .size = 24 })
             .setBold(true)
@@ -60,7 +70,12 @@ public:
             .setItalic(false)
             .setColor(sf::Color::Magenta)
             .addPart("This is the example usage of TextBrowser")
-            .addPart(", in CX Engine")
+            .addPart(", in CX Engine\n")
+
+            .setFont(defaultFont)
+            .setColor(sf::Color::Cyan)
+            .setBold(true)
+            .addPart(repeat("Text wrap example. ", 13))
 
             .build();
 
