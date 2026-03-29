@@ -7,7 +7,14 @@
 
 namespace cx::ui {
 
-class TextBrowser : public UiWidget {
+enum class TextWrap {
+    NoWrap,
+    WordWrap,
+    CharWrap,
+    WordWrapAnywhere
+};
+
+class TextBrowser: public UiWidget {
 public:
     TextBrowser();
 
@@ -15,18 +22,20 @@ public:
     void setDocument(TextDocument&& doc);
     void setMaxWidth(float width);
     void setLineSpacing(float spacing);
+    void setWrapMode(TextWrap mode);
 
     sf::Vector2f getSize() const override;
     void setUiScale(float scale) override;
     void update(float dt) override;
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-private:
+protected:
     TextDocument document;
 
     float maxWidth = 0.f;
     float lineSpacing = 1.2f;
     float uiScale = 1.f;
+    TextWrap wrapMode = TextWrap::WordWrap;
 
     struct RenderedSpan {
         sf::Text text;
@@ -40,6 +49,10 @@ private:
     void advanceLine(float* currentX, float* currentY, float* currentLineMaxHeight);
     sf::Text makeTextNode(const TextSpan& span, StringView t, u32 style);
     void appendText(
+        const TextSpan& span, StringView t, u32 style,
+        float* currentX, float* currentY, float* currentLineMaxHeight
+    );
+    void appendCharByChar(
         const TextSpan& span, StringView t, u32 style,
         float* currentX, float* currentY, float* currentLineMaxHeight
     );
