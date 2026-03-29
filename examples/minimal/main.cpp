@@ -3,7 +3,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <cx-engine/core/app.hpp>
 
-class GameConfigManager: public cx::AppConfigManager {
+class GameConfigManager: public cx::ConfigDriver {
 public:
     GameConfigManager() = default;
 
@@ -29,7 +29,7 @@ public:
     }
 
     GameConfigManager config;
-    cx::AppConfigManager& getConfig() override {
+    cx::ConfigDriver& getConfig() override {
         return config;
     }
 

@@ -40,7 +40,7 @@ TD_DEF_ENUM_STRINGS(cx::MsaaMode, "disabled", "x2", "x4", "x8");
 
 namespace cx {
 
-class AppConfigManager {
+class ConfigDriver {
 public:
     virtual VideoMode      getVideoMode() const = 0;
     virtual sf::Vector2u   getRenderResolution() const = 0;

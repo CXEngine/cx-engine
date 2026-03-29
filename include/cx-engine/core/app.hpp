@@ -4,7 +4,7 @@
 #include <cx-engine/defs/types.hpp>
 
 #include <cx-engine/core/app/render-pipeline.hpp>
-#include <cx-engine/core/app/config-manager.hpp>
+#include <cx-engine/core/app/config-driver.hpp>
 
 #include <cx-engine/systems/assets/cxpk.hpp>
 #include <cx-engine/utils/buf.hpp>
@@ -62,7 +62,7 @@ public:
     App(String name);
     ~App();
 
-    virtual AppConfigManager& getConfig() = 0;
+    virtual ConfigDriver& getConfig() = 0;
 
     void updateScales();
 
