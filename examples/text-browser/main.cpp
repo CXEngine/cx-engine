@@ -1,30 +1,13 @@
-#include "cx-engine/ui/text-browser.hpp"
-#include <cx-engine/ui/text/builder.hpp>
-#include <cx-engine/systems/logging/logger.hpp>
-#include <cx-engine/ui/ui-widget.hpp>
-#include <cx-engine/ui/checkbox.hpp>
-
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <cx-engine/core/app.hpp>
 
-class GameConfigManager: public cx::ConfigDriver {
-public:
-    GameConfigManager() = default;
+#include <cx-engine/systems/logging/logger.hpp>
+#include <cx-engine/core/app/config-drivers/default.hpp>
 
-    cx::VideoMode getVideoMode() const override { return cx::VideoMode::Windowed; }
+#include <cx-engine/ui/text-browser.hpp>
+#include <cx-engine/ui/text/builder.hpp>
+#include <cx-engine/ui/ui-widget.hpp>
 
-    sf::Vector2u getRenderResolution() const override { return getTargetResolution(); }
-    sf::Vector2u getUiResolution() const override { return getTargetResolution(); }
-    sf::Vector2u getTargetResolution() const override { return { 1920, 1080 }; }
-
-    bool getFsrEnabled() const override { return false; }
-
-    bool getVsyncEnabled() const override { return true; }    
-    cx::Optional<uint> getFpsLimit() const override { return std::nullopt; }
-
-    bool getFxaaEnabled() const override { return false; }
-    uint getMsaaLevel() const override { return 4; }
-};
+#include <SFML/Graphics/RectangleShape.hpp>
 
 cx::String repeat(cx::StringView s, cx::usize times) {
     cx::String result;
@@ -83,7 +66,7 @@ public:
         cx::Logger::info("hello");
     }
 
-    GameConfigManager config;
+    cx::DefaultConfigDriver config;
     cx::ConfigDriver& getConfig() override {
         return config;
     }

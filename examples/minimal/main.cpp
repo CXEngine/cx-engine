@@ -1,26 +1,9 @@
+#include <cx-engine/core/app.hpp>
+
+#include <cx-engine/core/app/config-drivers/default.hpp>
 #include <cx-engine/systems/logging/logger.hpp>
 
 #include <SFML/Graphics/RectangleShape.hpp>
-#include <cx-engine/core/app.hpp>
-
-class GameConfigManager: public cx::ConfigDriver {
-public:
-    GameConfigManager() = default;
-
-    cx::VideoMode getVideoMode() const override { return cx::VideoMode::Windowed; }
-
-    sf::Vector2u getRenderResolution() const override { return getTargetResolution(); }
-    sf::Vector2u getUiResolution() const override { return getTargetResolution(); }
-    sf::Vector2u getTargetResolution() const override { return { 1920, 1080 }; }
-
-    bool getFsrEnabled() const override { return false; }
-
-    bool getVsyncEnabled() const override { return true; }    
-    cx::Optional<uint> getFpsLimit() const override { return std::nullopt; }
-
-    bool getFxaaEnabled() const override { return false; }
-    uint getMsaaLevel() const override { return 4; }
-};
 
 class Game: public cx::App {
 public:
@@ -28,7 +11,7 @@ public:
         forceRecreateWindow(cx::WindowType::Normal);
     }
 
-    GameConfigManager config;
+    cx::DefaultConfigDriver config;
     cx::ConfigDriver& getConfig() override {
         return config;
     }
