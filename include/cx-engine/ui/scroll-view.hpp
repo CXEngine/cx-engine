@@ -28,8 +28,8 @@ protected:
 
 public:
     sf::Vector2f mouseScrollSpeed = { 60.f, 60.f };
-    sf::Vector2f keyboardScrollSpeed = { 60.f, 60.f };
-    sf::Vector2f gamepadScrollSpeed = { 60.f, 60.f };
+    sf::Vector2f keyboardScrollSpeed = { 25.f, 25.f };
+    sf::Vector2f gamepadScrollSpeed = { 10.f, 10.f };
     Optional<sf::Vector2f> smoothScrollSpeed = std::nullopt;
 
 protected:
@@ -108,6 +108,13 @@ public:
     void scrollRelativeHorizontal(float delta)   { scrollRelative({ delta, 0.f }); }
 
     void gamepad(Gamepad& gamepad) override {
+        if (hasFlag(inputMode, InputMode::Gamepad)) {
+            float ry = gamepad.axis(PadAxis::LeftY);
+            float rx = gamepad.axis(PadAxis::LeftX);
+
+            if (std::abs(ry) > 0.1f) scrollRelativeVertical(ry * gamepadScrollSpeed.y);
+            if (std::abs(rx) > 0.1f) scrollRelativeHorizontal(rx * gamepadScrollSpeed.x);
+        }
         content.gamepad(gamepad);
     }
 
