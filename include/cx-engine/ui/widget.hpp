@@ -54,11 +54,14 @@ public:
 template <typename T>
 concept DerivedFromWidget = std::derived_from<T, Widget>
     // LSP-only: improves editor inference; no effect on compilation
-    && requires(T w, Gamepad& gamepad, const sf::Event& event, float dt, sf::RenderTarget& target, sf::RenderStates states) {
+    && requires(T w, Gamepad& gamepad, const sf::Event& event, float dt, float scale, sf::RenderTarget& target, sf::RenderStates states) {
     { w.gamepad(gamepad)     } -> std::same_as<void>;
     { w.handle(event)        } -> std::same_as<void>;
     { w.update(dt)           } -> std::same_as<void>;
     { w.draw(target, states) } -> std::same_as<void>;
+
+    { w.getSize() }            -> std::same_as<sf::Vector2f>;
+    { w.setUiScale(scale) }    -> std::same_as<void>;
 };
 
 } // namespace cx::ui

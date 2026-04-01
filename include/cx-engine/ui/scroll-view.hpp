@@ -45,6 +45,13 @@ public:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
         target.draw(content, states);
     }
+
+    sf::Vector2f getSize() const override {
+        return content.getSize();
+    }
+    void setUiScale(float scale) override {
+        content.setUiScale(scale);
+    }
 };
 
 } // namespace cx::ui
