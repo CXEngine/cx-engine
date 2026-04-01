@@ -2,6 +2,10 @@
 
 #include <cx-engine/ui/widget.hpp>
 
+#include <cx-engine/systems/gamepad/gamepad.hpp>
+#include <cx-engine/systems/input/keyboard.hpp>
+#include <cx-engine/systems/input/mouse.hpp>
+
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -108,13 +112,26 @@ public:
     }
 
     void update(float dt) override {
+        if (hasFlag(inputMode, InputMode::Keyboard)) {
+            if (Keyboard::isPressed(Key::Down)) {
+                scrollRelativeVertical(keyboardScrollSpeed.y);
+            } else if (Keyboard::isPressed(Key::Up)) {
+                scrollRelativeVertical(-keyboardScrollSpeed.y);
+            }
+
+            if (Keyboard::isPressed(Key::Left)) {
+                scrollRelativeHorizontal(-keyboardScrollSpeed.x);
+            } else if (Keyboard::isPressed(Key::Right)) {
+                scrollRelativeHorizontal(keyboardScrollSpeed.x);
+            }
+        }
+
         targetScrollOffset = getClampedScroll(targetScrollOffset);
         scrollOffset = getNextScrollOffset(scrollOffset, targetScrollOffset, dt);
         content.update(dt);
     }
 
     void handle(const sf::Event& event) override {
-        content.handle(event);
         if (hasFlag(inputMode, InputMode::Mouse)) {
             if (auto mws = event.getIf<sf::Event::MouseWheelScrolled>()) {
                 switch (mws->wheel) {
@@ -126,6 +143,24 @@ public:
                     break;
                 }
             }
+        }
+
+        if (event.is<sf::Event::MouseMoved>() || 
+            event.is<sf::Event::MouseButtonPressed>() || 
+            event.is<sf::Event::MouseButtonReleased>() ||
+            event.is<sf::Event::MouseWheelScrolled>()) 
+        {
+            sf::Event adj = event;
+            sf::Vector2i off((int) std::round(scrollOffset.x), (int) std::round(scrollOffset.y));
+
+            if      (auto* e = adj.getIf<sf::Event::MouseMoved>())          e->position += off;
+            else if (auto* e = adj.getIf<sf::Event::MouseButtonPressed>())  e->position += off;
+            else if (auto* e = adj.getIf<sf::Event::MouseButtonReleased>()) e->position += off;
+            else if (auto* e = adj.getIf<sf::Event::MouseWheelScrolled>())  e->position += off;
+
+            content.handle(adj);
+        } else {
+            content.handle(event);
         }
     }
 
