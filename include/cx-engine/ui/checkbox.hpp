@@ -25,9 +25,9 @@ public:
     void gamepad(Gamepad& gamepad) override;
     void handle(const sf::Event& event) override;
     void update(float dt) override;
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     void updateLayout();
 
     static sf::ConvexShape makeRoundedRect(sf::Vector2f size, float radius, unsigned int cornerPointCount);
