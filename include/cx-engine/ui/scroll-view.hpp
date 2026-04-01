@@ -13,17 +13,22 @@ protected:
     TContent content;
 
 public:
-    ScrollView(TContent content) : content(std::move(content)) {}
+    template <typename U>
+    ScrollView(U&& content)
+        : content(std::forward<U>(content)) {}
 
-    TContent& setContent(TContent c) {
-        return content = std::move(c);
+    template <typename U>
+    TContent& setContent(U&& c) {
+        return content = std::forward<U>(c);
+    }
+
+    template <typename... Args>
+    TContent& makeContent(Args&&... args) {
+        return content = TContent(std::forward<Args>(args)...);
     }
 
     const TContent& getContent() const { return content; }
     TContent& getContent() { return content; }
-
-    const TContent* operator->() const { return &content; }
-    TContent* operator->() { return &content; }
 
     void gamepad(Gamepad& gamepad) override {
         content.gamepad(gamepad);
