@@ -7,6 +7,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 #include <cmath>
+#include <algorithm>
 
 namespace cx::ui {
 
@@ -28,6 +29,14 @@ public:
     Optional<sf::Vector2f> smoothScrollSpeed = std::nullopt;
 
 protected:
+    sf::Vector2f getClampedScroll(sf::Vector2f offset) const {
+        sf::Vector2f contentSize = content.getSize();
+        return {
+            std::clamp(offset.x, 0.f, std::max(0.f, contentSize.x - viewportSize.x)),
+            std::clamp(offset.y, 0.f, std::max(0.f, contentSize.y - viewportSize.y))
+        };
+    }
+
     sf::Vector2f getNextScrollOffset(sf::Vector2f current, sf::Vector2f target, float dt) {
         if (!smoothScrollSpeed) return target;
         return {
@@ -71,8 +80,8 @@ public:
     }
 
     void setScroll(sf::Vector2f offset) {
-        scrollOffset = offset;
-        targetScrollOffset = offset;
+        scrollOffset = getClampedScroll(offset);
+        targetScrollOffset = scrollOffset;
     }
     sf::Vector2f getScroll() const {
         return scrollOffset;
@@ -99,6 +108,7 @@ public:
     }
 
     void update(float dt) override {
+        targetScrollOffset = getClampedScroll(targetScrollOffset);
         scrollOffset = getNextScrollOffset(scrollOffset, targetScrollOffset, dt);
         content.update(dt);
     }
