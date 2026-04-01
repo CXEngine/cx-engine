@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cx-engine/ui/ui-widget.hpp>
+#include <cx-engine/ui/widget.hpp>
 #include <cx-engine/ui/text/document.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Font.hpp>
@@ -14,7 +14,7 @@ enum class TextWrap {
     WordWrapAnywhere
 };
 
-class TextBrowser: public UiWidget {
+class TextBrowser: public Widget {
 public:
     TextBrowser();
 

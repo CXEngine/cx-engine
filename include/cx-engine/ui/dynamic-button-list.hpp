@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cx-engine/ui/ui-widget.hpp>
+#include <cx-engine/ui/widget.hpp>
 #include <cx-engine/defs/types.hpp>
 
 #include <cx-engine/ui/menu-button.hpp>
@@ -10,7 +10,7 @@
 
 namespace cx::ui {
 
-class DynamicButtonList: public UiWidget {
+class DynamicButtonList: public Widget {
 private:
     Vec<MenuButton*> buttons;
     Vec<float> animWidths;

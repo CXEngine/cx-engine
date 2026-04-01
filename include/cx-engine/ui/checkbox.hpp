@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cx-engine/ui/ui-widget.hpp>
+#include <cx-engine/ui/widget.hpp>
 #include <cx-engine/systems/input/mouse.hpp>
 
 #include <SFML/Graphics/Color.hpp>
@@ -9,7 +9,7 @@
 
 namespace cx::ui {
 
-class Checkbox: public UiWidget {
+class Checkbox: public Widget {
 public:
     Checkbox();
 

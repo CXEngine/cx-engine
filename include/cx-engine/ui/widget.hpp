@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cx-engine/systems/gamepad/gamepad.hpp"
+#include <cx-engine/systems/gamepad/gamepad.hpp>
 #include <cx-engine/utils/bitflags.hpp>
 #include <cx-engine/defs/types.hpp>
 
@@ -10,9 +10,9 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Window/Event.hpp>
 
-namespace cx {
+namespace cx::ui {
 
-enum class UiInputMode {
+enum class InputMode {
     Mouse = 1 << 0,
     Keyboard = 1 << 1,
     Gamepad = 1 << 2,
@@ -21,15 +21,15 @@ enum class UiInputMode {
     All = Mouse | Keyboard | Gamepad,
 };
 
-TD_BITFLAGS(UiInputMode);
+TD_BITFLAGS(InputMode);
 
-class UiWidget: public sf::Drawable, public sf::Transformable {
+class Widget: public sf::Drawable, public sf::Transformable {
 protected:
-    UiInputMode inputMode;
+    InputMode inputMode;
     bool isFocused;
 
 public:
-    virtual ~UiWidget() = default;
+    virtual ~Widget() = default;
 
     virtual void gamepad(Gamepad& gamepad) {}
     virtual void handle(const sf::Event& event) {}
@@ -45,10 +45,13 @@ public:
     void setFocus(bool f) { isFocused = f; }
     bool hasFocus() const { return isFocused; }
 
-    void setInputMode(UiInputMode mode) { inputMode = mode; }
-    UiInputMode getInputMode() const { return inputMode; }
+    void setInputMode(InputMode mode) { inputMode = mode; }
+    InputMode getInputMode() const { return inputMode; }
 
     virtual void setUiScale(float scale) = 0;
 };
 
-} // namespace cx
+template <typename T>
+concept AnyWidget = std::is_base_of_v<Widget, T>;
+
+} // namespace cx::ui

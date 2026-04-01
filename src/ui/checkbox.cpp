@@ -156,7 +156,7 @@ sf::Vector2f Checkbox::getSize() const {
 }
 
 void Checkbox::handle(const sf::Event& event) {
-    if (hasFlag(inputMode, UiInputMode::Mouse)) {
+    if (hasFlag(inputMode, InputMode::Mouse)) {
         if (auto mp = event.getIf<sf::Event::MouseButtonPressed>()) {
             if (mp->button != sf::Mouse::Button::Left) return;
             if (getGlobalBounds().contains(sf::Vector2f(mp->position))) {
@@ -165,7 +165,7 @@ void Checkbox::handle(const sf::Event& event) {
         }
     }
 
-    if (hasFlag(inputMode, UiInputMode::Keyboard) && hasFocus()) {
+    if (hasFlag(inputMode, InputMode::Keyboard) && hasFocus()) {
         if (auto kp = event.getIf<sf::Event::KeyReleased>()) {
             if (kp->code != cx::Key::Enter) return;
             setChecked(!checked, true);
@@ -174,7 +174,7 @@ void Checkbox::handle(const sf::Event& event) {
 }
 
 void Checkbox::gamepad(Gamepad& gamepad) {
-    if (hasFlag(inputMode, UiInputMode::Gamepad) && hasFocus()) {
+    if (hasFlag(inputMode, InputMode::Gamepad) && hasFocus()) {
         if (gamepad.justPressed(PadButton::South)) {
             setChecked(!checked, true);
         }

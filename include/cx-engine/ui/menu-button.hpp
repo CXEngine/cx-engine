@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cx-engine/core/app.hpp>
-#include <cx-engine/ui/ui-widget.hpp>
+#include <cx-engine/ui/widget.hpp>
 
 #include <cx-engine/defs/types.hpp>
 #include <cx-engine/systems/gamepad/gamepad.hpp>
@@ -10,7 +10,7 @@
 
 namespace cx::ui {
 
-class MenuButton: public UiWidget {
+class MenuButton: public Widget {
 public:
     using ClickCallback = Func<void(MenuButton&)>;
 

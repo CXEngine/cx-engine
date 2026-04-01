@@ -5,7 +5,7 @@
 namespace cx::ui {
 
 TextBrowser::TextBrowser() {
-    inputMode = UiInputMode::None;
+    inputMode = InputMode::None;
     isFocused = false;
 }
 

@@ -38,7 +38,7 @@ void DynamicButtonList::setUiScale(float scale) {
 }
 
 void DynamicButtonList::gamepad(Gamepad& pad) {
-    if (!navigationEnabled || !hasFlag(inputMode, UiInputMode::Gamepad) || buttons.empty()) {
+    if (!navigationEnabled || !hasFlag(inputMode, InputMode::Gamepad) || buttons.empty()) {
         selectedIndex = std::nullopt;
         return;
     }
