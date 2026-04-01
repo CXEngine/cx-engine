@@ -52,6 +52,6 @@ public:
 };
 
 template <typename T>
-concept AnyWidget = std::is_base_of_v<Widget, T>;
+concept DerivedFromWidget = std::derived_from<T, Widget>;
 
 } // namespace cx::ui
