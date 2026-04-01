@@ -5,6 +5,7 @@
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+
 #include <cmath>
 
 namespace cx::ui {
@@ -20,10 +21,20 @@ protected:
     sf::Vector2f scrollOffset;
     sf::Vector2f targetScrollOffset;
 
+public:
     sf::Vector2f mouseScrollSpeed = { 60.f, 60.f };
     sf::Vector2f keyboardScrollSpeed = { 60.f, 60.f };
     sf::Vector2f gamepadScrollSpeed = { 60.f, 60.f };
-    Optional<bool> smoothScrollSpeed = std::nullopt;
+    Optional<sf::Vector2f> smoothScrollSpeed = std::nullopt;
+
+protected:
+    sf::Vector2f getNextScrollOffset(sf::Vector2f current, sf::Vector2f target, float dt) {
+        if (!smoothScrollSpeed) return target;
+        return {
+            current.x + (target.x - current.x) * std::clamp(smoothScrollSpeed->x * dt, 0.f, 1.f),
+            current.y + (target.y - current.y) * std::clamp(smoothScrollSpeed->y * dt, 0.f, 1.f),
+        };
+    }
 
 public:
     ScrollView() : content() {}
@@ -61,32 +72,50 @@ public:
 
     void setScroll(sf::Vector2f offset) {
         scrollOffset = offset;
+        targetScrollOffset = offset;
     }
     sf::Vector2f getScroll() const {
         return scrollOffset;
     }
 
-    void scrollRelative(sf::Vector2f delta) {
-        setScroll(getScroll() + delta);
+    void setTargetScroll(sf::Vector2f targetOffset) {
+        targetScrollOffset = targetOffset;
+    }
+    sf::Vector2f getTargetScroll() const {
+        return targetScrollOffset;
     }
 
-    void setScrollVertical(float offset)       { setScroll({ getScroll().x, offset }); }
-    void setScrollHorizontal(float offset)     { setScroll({ offset, getScroll().y }); }
-    void scrollRelativeVertical(float delta)   { scrollRelative({ 0.f, delta }); }
-    void scrollRelativeHorizontal(float delta) { scrollRelative({ delta, 0.f }); }
+    void scrollRelative(sf::Vector2f delta) {
+        targetScrollOffset += delta;
+    }
+
+    void setTargetScrollVertical(float offset)   { setTargetScroll({ targetScrollOffset.x, offset }); }
+    void setTargetScrollHorizontal(float offset) { setTargetScroll({ offset, targetScrollOffset.y }); }
+    void scrollRelativeVertical(float delta)     { scrollRelative({ 0.f, delta }); }
+    void scrollRelativeHorizontal(float delta)   { scrollRelative({ delta, 0.f }); }
 
     void gamepad(Gamepad& gamepad) override {
         content.gamepad(gamepad);
     }
 
     void update(float dt) override {
+        scrollOffset = getNextScrollOffset(scrollOffset, targetScrollOffset, dt);
         content.update(dt);
     }
 
     void handle(const sf::Event& event) override {
         content.handle(event);
-        if (auto mws = event.getIf<sf::Event::MouseWheelScrolled>()) {
-            scrollRelativeVertical(-mws->delta * mouseScrollSpeed.y);
+        if (hasFlag(inputMode, InputMode::Mouse)) {
+            if (auto mws = event.getIf<sf::Event::MouseWheelScrolled>()) {
+                switch (mws->wheel) {
+                case sf::Mouse::Wheel::Vertical:
+                    scrollRelativeVertical(-mws->delta * mouseScrollSpeed.y);
+                    break;
+                case sf::Mouse::Wheel::Horizontal:
+                    scrollRelativeHorizontal(-mws->delta * mouseScrollSpeed.x);
+                    break;
+                }
+            }
         }
     }
 
