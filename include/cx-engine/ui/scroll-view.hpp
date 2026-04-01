@@ -2,7 +2,10 @@
 
 #include <cx-engine/ui/widget.hpp>
 
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <cmath>
 
 namespace cx::ui {
 
@@ -10,14 +13,20 @@ namespace cx::ui {
 template <DerivedFromWidget TContent>
 class ScrollView: public Widget {
 protected:
+    mutable sf::RenderTexture rt;
+
     TContent content;
+    sf::Vector2f viewportSize;
 
 public:
     ScrollView() : content() {}
 
     template <typename U>
     ScrollView(U&& content)
-        : content(std::forward<U>(content)) {}
+        : content(std::forward<U>(content))
+    {
+        viewportSize = this->content.getSize();
+    }
 
     template <typename U>
     TContent& setContent(U&& c) {
@@ -32,6 +41,10 @@ public:
     const TContent& getContent() const { return content; }
     TContent& getContent() { return content; }
 
+    void setSize(sf::Vector2f size) {
+        viewportSize = size;
+    }
+
     void gamepad(Gamepad& gamepad) override {
         content.gamepad(gamepad);
     }
@@ -45,17 +58,41 @@ public:
     }
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-        target.draw(content, states);
+        sf::Vector2f size = getSize();
+        if (size.x < 1.f || size.y < 1.f) return;
+
+        sf::Vector2u rtSize = {
+            (uint) std::ceil(size.x),
+            (uint) std::ceil(size.y),
+        };
+
+        if (rt.getSize() != rtSize) {
+            if (!rt.resize(rtSize)) {
+                return;
+            }
+        }
+
+        rt.clear(sf::Color::Transparent);
+        
+        sf::RenderStates contentStates;
+        
+        // scroll offset will be applied to contentStates.transform here, in the future
+        rt.draw(content, contentStates);
+        rt.display();
+
+        states.transform *= getTransform();
+        sf::Sprite rs(rt.getTexture());
+        target.draw(rs, states);
     }
 
     sf::Vector2f getSize() const override {
-        return content.getSize();
+        return viewportSize;
     }
+
     void setUiScale(float scale) override {
         content.setUiScale(scale);
     }
 };
 
 } // namespace cx::ui
-
 
