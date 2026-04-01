@@ -25,6 +25,10 @@ public:
     const TContent* operator->() const { return &content; }
     TContent* operator->() { return &content; }
 
+    void gamepad(Gamepad& gamepad) override {
+        content.gamepad(gamepad);
+    }
+
     void update(float dt) override {
         content.update(dt);
     }
