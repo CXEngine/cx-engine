@@ -13,6 +13,8 @@ protected:
     TContent content;
 
 public:
+    ScrollView() : content() {}
+
     template <typename U>
     ScrollView(U&& content)
         : content(std::forward<U>(content)) {}
