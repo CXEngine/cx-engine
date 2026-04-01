@@ -17,16 +17,17 @@ protected:
 
     TContent content;
     sf::Vector2f viewportSize;
+    sf::Vector2f scrollOffset;
 
 public:
     ScrollView() : content() {}
 
     template <typename U>
-    ScrollView(U&& content)
-        : content(std::forward<U>(content))
-    {
-        viewportSize = this->content.getSize();
-    }
+    ScrollView(U&& c)
+        : content(std::forward<U>(c))
+        , viewportSize(content.getSize())
+        , scrollOffset(0, 0)
+    {}
 
     template <typename U>
     TContent& setContent(U&& c) {
@@ -43,6 +44,16 @@ public:
 
     void setSize(sf::Vector2f size) {
         viewportSize = size;
+    }
+
+    void setScroll(sf::Vector2f offset) {
+        scrollOffset = offset;
+    }
+    sf::Vector2f getScroll() const {
+        return scrollOffset;
+    }
+    void scrollRelative(sf::Vector2f delta) {
+        setScroll(getScroll() + delta);
     }
 
     void gamepad(Gamepad& gamepad) override {
@@ -76,7 +87,7 @@ public:
         
         sf::RenderStates contentStates;
         
-        // scroll offset will be applied to contentStates.transform here, in the future
+        contentStates.transform.translate(-scrollOffset);
         rt.draw(content, contentStates);
         rt.display();
 
