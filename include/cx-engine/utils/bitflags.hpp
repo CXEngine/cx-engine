@@ -6,194 +6,82 @@
 
 namespace cx {
 
-/// @brief Internal trait to enable bitwise operators for an enum.
-template <typename Enum>
-struct _td_EnableBitflagsOperators {
-    static constexpr bool enable = false; //< Whether bitwise operators are enabled
-};
+/// @brief Internal implementations for bitflags operators to keep the macro lean.
+namespace bitflagsImpl {
+    template <typename T>
+    using Underlying = std::underlying_type_t<T>;
 
-/// @brief Macro to enable bitflags operators for a specific enum type.
-/// @param x The enum type to enable operators for
-#define TD_BITFLAGS(x)                    \
-template <>                               \
-struct _td_EnableBitflagsOperators<x> {   \
-    static constexpr bool enable = true;  \
-};
+    template <typename T>
+    constexpr T orOp(T lhs, T rhs) {
+        return static_cast<T>(static_cast<Underlying<T>>(lhs) | static_cast<Underlying<T>>(rhs));
+    }
 
-/// @brief Performs bitwise OR on two enum values
-/// @param lhs Left-hand side operand
-/// @param rhs Right-hand side operand
-/// @return Resulting enum value
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, Enum>
-operator|(Enum lhs, Enum rhs) {
-    using Underlying = std::underlying_type_t<Enum>;
-    return static_cast<Enum>(
-        static_cast<Underlying>(lhs) |
-        static_cast<Underlying>(rhs));
-}
+    template <typename T>
+    constexpr T andOp(T lhs, T rhs) {
+        return static_cast<T>(static_cast<Underlying<T>>(lhs) & static_cast<Underlying<T>>(rhs));
+    }
 
-/// @brief Performs bitwise AND on two enum values
-/// @param lhs Left-hand side operand
-/// @param rhs Right-hand side operand
-/// @return Resulting enum value
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, Enum>
-operator&(Enum lhs, Enum rhs) {
-    using Underlying = std::underlying_type_t<Enum>;
-    return static_cast<Enum>(
-        static_cast<Underlying>(lhs) &
-        static_cast<Underlying>(rhs));
-}
+    template <typename T>
+    constexpr T xorOp(T lhs, T rhs) {
+        return static_cast<T>(static_cast<Underlying<T>>(lhs) ^ static_cast<Underlying<T>>(rhs));
+    }
 
-/// @brief Performs bitwise XOR on two enum values
-/// @param lhs Left-hand side operand
-/// @param rhs Right-hand side operand
-/// @return Resulting enum value
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, Enum>
-operator^(Enum lhs, Enum rhs) {
-    using Underlying = std::underlying_type_t<Enum>;
-    return static_cast<Enum>(
-        static_cast<Underlying>(lhs) ^
-        static_cast<Underlying>(rhs));
-}
+    template <typename T>
+    constexpr T notOp(T rhs) {
+        return static_cast<T>(~static_cast<Underlying<T>>(rhs));
+    }
 
-/// @brief Performs bitwise NOT on an enum value
-/// @param rhs The enum value to negate
-/// @return Resulting enum value
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, Enum>
-operator~(Enum rhs) {
-    using Underlying = std::underlying_type_t<Enum>;
-    return static_cast<Enum>(
-        ~static_cast<Underlying>(rhs));
-}
+    template <typename T>
+    constexpr T lshiftOp(T lhs, int rhs) {
+        return static_cast<T>(static_cast<Underlying<T>>(lhs) << rhs);
+    }
 
-/// @brief Performs bitwise OR and assignment on an enum value
-/// @param lhs Reference to the left-hand side operand
-/// @param rhs Right-hand side operand
-/// @return Reference to the modified lhs
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, Enum&>
-operator|=(Enum& lhs, Enum rhs) {
-    using Underlying = std::underlying_type_t<Enum>;
-    lhs = static_cast<Enum>(
-        static_cast<Underlying>(lhs) |
-        static_cast<Underlying>(rhs));
-    return lhs;
-}
-
-/// @brief Performs bitwise AND and assignment on an enum value
-/// @param lhs Reference to the left-hand side operand
-/// @param rhs Right-hand side operand
-/// @return Reference to the modified lhs
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, Enum&>
-operator&=(Enum& lhs, Enum rhs) {
-    using Underlying = std::underlying_type_t<Enum>;
-    lhs = static_cast<Enum>(
-        static_cast<Underlying>(lhs) &
-        static_cast<Underlying>(rhs));
-    return lhs;
-}
-
-/// @brief Performs bitwise XOR and assignment on an enum value
-/// @param lhs Reference to the left-hand side operand
-/// @param rhs Right-hand side operand
-/// @return Reference to the modified lhs
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, Enum&>
-operator^=(Enum& lhs, Enum rhs) {
-    using Underlying = std::underlying_type_t<Enum>;
-    lhs = static_cast<Enum>(
-        static_cast<Underlying>(lhs) ^
-        static_cast<Underlying>(rhs));
-    return lhs;
-}
-
-/// @brief Performs left shift on an enum value
-/// @param lhs The enum value to shift
-/// @param rhs Number of positions to shift
-/// @return Resulting enum value
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, Enum>
-operator<<(Enum lhs, int rhs) {
-    using Underlying = std::underlying_type_t<Enum>;
-    return static_cast<Enum>(
-        static_cast<Underlying>(lhs) << rhs);
-}
-
-/// @brief Performs right shift on an enum value
-/// @param lhs The enum value to shift
-/// @param rhs Number of positions to shift
-/// @return Resulting enum value
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, Enum>
-operator>>(Enum lhs, int rhs) {
-    using Underlying = std::underlying_type_t<Enum>;
-    return static_cast<Enum>(
-        static_cast<Underlying>(lhs) >> rhs);
-}
-
-/// @brief Performs left shift and assignment on an enum value
-/// @param lhs Reference to the enum value to shift
-/// @param rhs Number of positions to shift
-/// @return Reference to the modified lhs
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, Enum&>
-operator<<=(Enum& lhs, int rhs) {
-    using Underlying = std::underlying_type_t<Enum>;
-    lhs = static_cast<Enum>(
-        static_cast<Underlying>(lhs) << rhs);
-    return lhs;
-}
-
-/// @brief Performs right shift and assignment on an enum value
-/// @param lhs Reference to the enum value to shift
-/// @param rhs Number of positions to shift
-/// @return Reference to the modified lhs
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, Enum&>
-operator>>=(Enum& lhs, int rhs) {
-    using Underlying = std::underlying_type_t<Enum>;
-    lhs = static_cast<Enum>(
-        static_cast<Underlying>(lhs) >> rhs);
-    return lhs;
-}
-
-/// @brief Logical NOT operator for enums (checks if value is zero)
-/// @param rhs The enum value to check
-/// @return True if the value is zero, false otherwise
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, bool>
-operator!(Enum rhs) {
-    return static_cast<std::underlying_type_t<Enum>>(rhs) == 0;
-}
-
-/// @brief Checks if a specific flag is set in the given value
-/// @param value The value to check
-/// @param flag The flag to look for
-/// @return True if the flag is set, false otherwise
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, bool>
-hasFlag(Enum value, Enum flag) {
-    using Underlying = std::underlying_type_t<Enum>;
-    return (static_cast<Underlying>(value) & static_cast<Underlying>(flag)) == static_cast<Underlying>(flag);
-}
-
-/// @brief Sets or clears a specific flag in the given value
-/// @param value Reference to the value to modify
-/// @param flag The flag to set or clear
-/// @param enabled True to set the flag, false to clear it
-template <typename Enum>
-constexpr std::enable_if_t<_td_EnableBitflagsOperators<Enum>::enable, void>
-setFlag(Enum& value, Enum flag, bool enabled = true) {
-    if (enabled) {
-        value |= flag;
-    } else {
-        value &= ~flag;
+    template <typename T>
+    constexpr T rshiftOp(T lhs, int rhs) {
+        return static_cast<T>(static_cast<Underlying<T>>(lhs) >> rhs);
     }
 }
 
+/// @brief Checks if a specific flag is set in the given value.
+/// @param value The value to check
+/// @param flag The flag to look for
+/// @return True if the flag is set, false otherwise
+template <typename T>
+constexpr std::enable_if_t<std::is_enum_v<T>, bool>
+hasFlag(T value, T flag) {
+    using U = std::underlying_type_t<T>;
+    return (static_cast<U>(value) & static_cast<U>(flag)) == static_cast<U>(flag);
 }
+
+/// @brief Sets or clears a specific flag in the given value.
+/// @param value Reference to the value to modify
+/// @param flag The flag to set or clear
+/// @param enabled True to set the flag, false to clear it
+template <typename T>
+constexpr std::enable_if_t<std::is_enum_v<T>, void>
+setFlag(T& value, T flag, bool enabled = true) {
+    if (enabled) {
+        value = bitflagsImpl::orOp(value, flag);
+    } else {
+        value = bitflagsImpl::andOp(value, bitflagsImpl::notOp(flag));
+    }
+}
+
+} // namespace cx
+
+/// @brief Macro to enable bitflags operators for a specific enum type.
+/// Should be used in the same namespace as the enum.
+/// @param T The enum type to enable operators for
+#define TD_BITFLAGS(T)                                                                  \
+    inline constexpr T operator|(T lhs, T rhs) { return cx::bitflagsImpl::orOp(lhs, rhs); } \
+    inline constexpr T operator&(T lhs, T rhs) { return cx::bitflagsImpl::andOp(lhs, rhs); } \
+    inline constexpr T operator^(T lhs, T rhs) { return cx::bitflagsImpl::xorOp(lhs, rhs); } \
+    inline constexpr T operator~(T rhs) { return cx::bitflagsImpl::notOp(rhs); }            \
+    inline constexpr T& operator|=(T& lhs, T rhs) { return lhs = lhs | rhs; }           \
+    inline constexpr T& operator&=(T& lhs, T rhs) { return lhs = lhs & rhs; }           \
+    inline constexpr T& operator^=(T& lhs, T rhs) { return lhs = lhs ^ rhs; }           \
+    inline constexpr T operator<<(T lhs, int rhs) { return cx::bitflagsImpl::lshiftOp(lhs, rhs); } \
+    inline constexpr T operator>>(T lhs, int rhs) { return cx::bitflagsImpl::rshiftOp(lhs, rhs); } \
+    inline constexpr T& operator<<=(T& lhs, int rhs) { return lhs = lhs << rhs; }       \
+    inline constexpr T& operator>>=(T& lhs, int rhs) { return lhs = lhs >> rhs; }       \
+    inline constexpr bool operator!(T rhs) { return static_cast<std::underlying_type_t<T>>(rhs) == 0; }
