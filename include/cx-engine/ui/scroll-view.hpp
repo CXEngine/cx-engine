@@ -18,6 +18,12 @@ protected:
     TContent content;
     sf::Vector2f viewportSize;
     sf::Vector2f scrollOffset;
+    sf::Vector2f targetScrollOffset;
+
+    sf::Vector2f mouseScrollSpeed = { 60.f, 60.f };
+    sf::Vector2f keyboardScrollSpeed = { 60.f, 60.f };
+    sf::Vector2f gamepadScrollSpeed = { 60.f, 60.f };
+    Optional<bool> smoothScrollSpeed = std::nullopt;
 
 public:
     ScrollView() : content() {}
@@ -27,6 +33,7 @@ public:
         : content(std::forward<U>(c))
         , viewportSize(content.getSize())
         , scrollOffset(0, 0)
+        , targetScrollOffset(0, 0)
     {}
 
     template <typename U>
@@ -45,6 +52,12 @@ public:
     void setSize(sf::Vector2f size) {
         viewportSize = size;
     }
+    sf::Vector2f getSize() const override {
+        return viewportSize;
+    }
+    void setUiScale(float scale) override {
+        content.setUiScale(scale);
+    }
 
     void setScroll(sf::Vector2f offset) {
         scrollOffset = offset;
@@ -52,9 +65,15 @@ public:
     sf::Vector2f getScroll() const {
         return scrollOffset;
     }
+
     void scrollRelative(sf::Vector2f delta) {
         setScroll(getScroll() + delta);
     }
+
+    void setScrollVertical(float offset)       { setScroll({ getScroll().x, offset }); }
+    void setScrollHorizontal(float offset)     { setScroll({ offset, getScroll().y }); }
+    void scrollRelativeVertical(float delta)   { scrollRelative({ 0.f, delta }); }
+    void scrollRelativeHorizontal(float delta) { scrollRelative({ delta, 0.f }); }
 
     void gamepad(Gamepad& gamepad) override {
         content.gamepad(gamepad);
@@ -66,6 +85,9 @@ public:
 
     void handle(const sf::Event& event) override {
         content.handle(event);
+        if (auto mws = event.getIf<sf::Event::MouseWheelScrolled>()) {
+            scrollRelativeVertical(-mws->delta * mouseScrollSpeed.y);
+        }
     }
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
@@ -86,22 +108,14 @@ public:
         rt.clear(sf::Color::Transparent);
         
         sf::RenderStates contentStates;
-        
         contentStates.transform.translate(-scrollOffset);
+
         rt.draw(content, contentStates);
         rt.display();
 
         states.transform *= getTransform();
         sf::Sprite rs(rt.getTexture());
         target.draw(rs, states);
-    }
-
-    sf::Vector2f getSize() const override {
-        return viewportSize;
-    }
-
-    void setUiScale(float scale) override {
-        content.setUiScale(scale);
     }
 };
 
