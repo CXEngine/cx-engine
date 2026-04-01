@@ -28,12 +28,23 @@ cx::u8 randColorChan() {
     return (cx::u8) (rand() % 256);
 }
 
+cx::String repeat(cx::StringView s, cx::usize times) {
+    cx::String result;
+    result.reserve(s.length() * times);
+    for (cx::usize i = 0; i < times; ++i) {
+        result += s;
+    }
+    return result;
+}
+
 cx::ui::TextDocument makeDocument(const sf::Font& font, cx::uint howMany) {
     cx::ui::TextDocumentBuilder b({ .font = font, .size = 36 });
     for (cx::uint i = 0; i < howMany; ++i) {
         b.setColor({ randColorChan(), randColorChan(), randColorChan(), 255 });
         b.addPart("Line #" + cx::toString(i) + ". ");
         b.addPart(getRandomSentence());
+        b.addPart(repeat(" ", 70));
+        b.addPart("Easter egg!");
         b.addPart("\n");
     }
 
@@ -48,8 +59,7 @@ public:
     Game() : cx::App("Scroll view example") {
         forceRecreateWindow(cx::WindowType::Normal);
 
-        scrollView.getContent().setWrapMode(cx::ui::TextWrap::CharWrap);
-        scrollView.getContent().setMaxWidth(config.getTargetResolution().x);
+        scrollView.getContent().setWrapMode(cx::ui::TextWrap::NoWrap);
 
         scrollView.smoothScrollSpeed = { 25.f, 25.f };
         scrollView.mouseScrollSpeed = { 120.f, 120.f };
