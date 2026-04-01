@@ -80,6 +80,9 @@ public:
 
     void update(float dt) override {
         scrollView.update(dt);
+        for (auto& gamepad: gamepads) {
+            scrollView.gamepad(gamepad);
+        }
     }
     void handle(const sf::Event& event) override {
         scrollView.handle(event);
