@@ -50,6 +50,10 @@ public:
 
         scrollView.getContent().setWrapMode(cx::ui::TextWrap::CharWrap);
         scrollView.getContent().setMaxWidth(config.getTargetResolution().x);
+
+        scrollView.smoothScrollSpeed = { 25.f, 25.f };
+        scrollView.mouseScrollSpeed = { 120.f, 120.f };
+        scrollView.setInputMode(cx::ui::InputMode::All);
         scrollView.setSize(sf::Vector2f(config.getTargetResolution()));
 
         srand(time(NULL));
