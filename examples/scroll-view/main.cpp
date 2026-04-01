@@ -9,15 +9,35 @@
 #include <cx-engine/ui/scroll-view.hpp>
 #include <cx-engine/ui/ui-widget.hpp>
 
-#include <SFML/Graphics/RectangleShape.hpp>
+cx::String getRandomSentence() {
+    cx::String sentences[] = {
+        "Have a nice day!",
+        "It works on my machine.",
+        "This is probably fine.",
+        "I have no idea what I'm doing.",
+        "There is no bug, only features.",
+        "Something is definitely not right.",
+        "Trust me, I'm an engineer.",
+        "This seemed like a good idea at the time.",
+        "Error? What error?",
+    };
+    return sentences[rand() % std::size(sentences)];
+}
 
-cx::String repeat(cx::StringView s, cx::usize times) {
-    cx::String result;
-    result.reserve(s.length() * times);
-    for (cx::usize i = 0; i < times; ++i) {
-        result += s;
+cx::u8 randColorChan() {
+    return (cx::u8) (rand() % 256);
+}
+
+cx::ui::TextDocument makeDocument(const sf::Font& font, cx::uint howMany) {
+    cx::ui::TextDocumentBuilder b({ .font = font, .size = 36 });
+    for (cx::uint i = 0; i < howMany; ++i) {
+        b.setColor({ randColorChan(), randColorChan(), randColorChan(), 255 });
+        b.addPart("Line #" + cx::toString(i) + ". ");
+        b.addPart(getRandomSentence());
+        b.addPart("\n");
     }
-    return result;
+
+    return std::move(b).build();
 }
 
 class Game: public cx::App {
@@ -30,15 +50,9 @@ public:
 
         scrollView.getContent().setWrapMode(cx::ui::TextWrap::CharWrap);
         scrollView.getContent().setMaxWidth(config.getTargetResolution().x);
-
         scrollView.setSize(sf::Vector2f(config.getTargetResolution()));
 
-        cx::ui::TextDocument doc = cx::ui::TextDocumentBuilder({ .font = defaultFont, .size = 36 })
-            .setColor(sf::Color::Cyan)
-            .setBold(true)
-            .addPart(repeat("Text wrap example.\n", 100))
-
-            .build();
+        cx::ui::TextDocument doc = makeDocument(defaultFont, 150);
 
         scrollView.getContent().setDocument(doc); 
         cx::Logger::info("hello");
