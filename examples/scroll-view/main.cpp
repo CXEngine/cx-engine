@@ -52,6 +52,7 @@ public:
         scrollView.getContent().setMaxWidth(config.getTargetResolution().x);
         scrollView.setSize(sf::Vector2f(config.getTargetResolution()));
 
+        srand(time(NULL));
         cx::ui::TextDocument doc = makeDocument(defaultFont, 150);
 
         scrollView.getContent().setDocument(doc); 
