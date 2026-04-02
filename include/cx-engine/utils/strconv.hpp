@@ -19,10 +19,7 @@
 namespace cx {
 
 /// @brief Exception thrown when a string conversion fails.
-class StrconvError: public Exception {
-public:
-    using Exception::Exception;
-};
+CX_DEFINE_STANDARD_EXCEPTION(StrconvError, Exception);
 
 /// @brief Forward declaration for enum conversion (defined in enumstr.hpp).
 template <typename Enum>

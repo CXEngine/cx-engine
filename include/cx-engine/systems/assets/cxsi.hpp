@@ -24,10 +24,7 @@ Format:
   - png_data (RGBA PNG)
 */
 
-class ScaledImageLoadError: public Exception {
-public:
-    using Exception::Exception;
-};
+CX_DEFINE_STANDARD_EXCEPTION(ScaledImageLoadError, ResourceException);
 
 // A single variant inside a CXSI file. The variant refers to an entire texture
 // (no sub-rect needed)

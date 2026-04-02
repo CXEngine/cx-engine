@@ -11,10 +11,7 @@
 
 namespace cx {
 
-class AnimationLoadError: public Exception {
-public:
-    using Exception::Exception;
-};
+CX_DEFINE_STANDARD_EXCEPTION(AnimationLoadError, ResourceException);
 
 struct AnimationPage {
     sf::Texture texture;

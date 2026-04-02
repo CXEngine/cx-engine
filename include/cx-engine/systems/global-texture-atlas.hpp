@@ -17,9 +17,7 @@ private:
     explicit GlobalSpriteID(usize value) : value(value) {}
 };
 
-class GlobalSpriteAtlasError: public Exception {
-    using Exception::Exception;
-};
+CX_DEFINE_STANDARD_EXCEPTION(GlobalSpriteAtlasError, ResourceException);
 
 class GlobalSpriteAtlas {
 protected:

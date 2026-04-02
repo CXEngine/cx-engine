@@ -12,9 +12,7 @@
 
 namespace cx {
 
-struct TextureAtlasLoadError: public Exception {
-    using Exception::Exception;
-};
+CX_DEFINE_STANDARD_EXCEPTION(TextureAtlasLoadError, ResourceException);
 
 class TextureAtlas {
 public:

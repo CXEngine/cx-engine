@@ -10,9 +10,7 @@
 
 namespace cx {
 
-struct TileMapLoadError: public Exception {
-    using Exception::Exception;
-};
+CX_DEFINE_STANDARD_EXCEPTION(TileMapLoadError, ResourceException);
 
 #pragma pack(push, 1)
 struct TileMapHeader {
