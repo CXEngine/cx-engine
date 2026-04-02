@@ -56,7 +56,9 @@ public:
     cx::ui::ScrollView<cx::ui::TextBrowser> scrollView;
     sf::Font quicksandFont;
 
-    Game() : cx::App("Scroll view example") {
+    Game() : cx::App("Scroll view example") {}
+
+    void init() override {
         forceRecreateWindow(cx::WindowType::Normal);
 
         scrollView.getContent().setWrapMode(cx::ui::TextWrap::NoWrap);

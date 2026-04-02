@@ -72,6 +72,7 @@ public:
 
     int run();
 
+    virtual void init();
     virtual void update(float dt);
     virtual void handle(const sf::Event& event);
     virtual void drawGame(sf::RenderTarget& target);

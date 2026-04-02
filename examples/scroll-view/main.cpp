@@ -170,7 +170,9 @@ public:
     cx::DefaultConfigDriver config;
     cx::ui::ScrollView<TestCompositeWidget> scrollView;
 
-    Game() : cx::App("Scroll view example") {
+    Game() : cx::App("Scroll view example") {}
+
+    void init() override {
         forceRecreateWindow(cx::WindowType::Normal);
 
         srand((unsigned int)time(NULL));

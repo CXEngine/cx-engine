@@ -23,7 +23,9 @@ public:
     cx::ui::TextBrowser browser;
     sf::Font quicksandFont;
 
-    Game() : cx::App("Text browser example") {
+    Game() : cx::App("Text browser example") {}
+
+    void init() override {
         forceRecreateWindow(cx::WindowType::Normal);
 
         if (!quicksandFont.openFromFile("examples/text-browser/assets/Quicksand-Medium.ttf")) {

@@ -183,6 +183,8 @@ void App::forceQuit() {
     mainLoop.stop();
 }
 
+void App::init() {}
+
 void App::handle(const sf::Event& event) {
     stateManager.handle(event);
 }
@@ -201,6 +203,8 @@ void App::drawUi(sf::RenderTarget& target) {
 }
 
 int App::run() {
+    init();
+
     mainLoop.start();
     while (mainLoop.isRunning()) {
         mainLoop.next();
