@@ -10,9 +10,14 @@ protected:
 public:
     LoadingManager() {}
 
-    template <typename... Args>
-    void addStep(Args&&... args) {
-        steps.emplace_back(std::forward<Args>(args)...);
+    template <typename... TArgs>
+    void addStep(TArgs&&... args) {
+        steps.emplace_back(std::forward<TArgs>(args)...);
+    }
+
+    template <typename TSession>
+    TSession getSession() {
+        return TSession(steps);
     }
 };
 

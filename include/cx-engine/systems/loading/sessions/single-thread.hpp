@@ -9,9 +9,9 @@
 
 namespace cx {
 
-class SingleThreadLoadingSession : public LoadingSession {
+class SingleThreadLoadingSession: public LoadingSession {
 public:
-    SingleThreadLoadingSession(Vec<LoadingStep> steps);
+    SingleThreadLoadingSession(Slice<const LoadingStep> steps);
     ~SingleThreadLoadingSession() override;
 
     Optional<LoadingEvent> pollEvent() override;
@@ -25,7 +25,7 @@ private:
     void pushEvent(LoadingEvent event);
     float calculateTotalWeight(const Vec<LoadingStep>& steps);
 
-    Vec<LoadingStep> steps;
+    Slice<const LoadingStep> steps;
     std::thread workerThread;
     std::atomic<float> globalProgress = 0;
     std::atomic<bool> finished = false;
