@@ -2,8 +2,8 @@
 
 namespace cx {
 
-SingleThreadLoadingSession::SingleThreadLoadingSession(Vec<LoadingStep> steps)
-    : steps(std::move(steps))
+SingleThreadLoadingSession::SingleThreadLoadingSession(Slice<const LoadingStep> steps)
+    : steps(steps)
 {
     totalWeight = calculateTotalWeight(steps);
     workerThread = std::thread([this]() { run(); });
@@ -77,7 +77,7 @@ void SingleThreadLoadingSession::pushEvent(LoadingEvent event) {
     eventQueue.push(event);
 }
 
-float SingleThreadLoadingSession::calculateTotalWeight(const Vec<LoadingStep>& steps) {
+float SingleThreadLoadingSession::calculateTotalWeight(Slice<const LoadingStep> steps) {
     float weight = 0.0f;
     for (const auto& step: steps) {
         if (step.substeps.empty()) {

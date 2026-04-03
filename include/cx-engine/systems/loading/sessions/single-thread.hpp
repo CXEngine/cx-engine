@@ -23,7 +23,7 @@ private:
     void run();
     void processStep(const LoadingStep& step);
     void pushEvent(LoadingEvent event);
-    float calculateTotalWeight(const Vec<LoadingStep>& steps);
+    float calculateTotalWeight(Slice<const LoadingStep> steps);
 
     Slice<const LoadingStep> steps;
     std::thread workerThread;
