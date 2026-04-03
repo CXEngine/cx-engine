@@ -1,5 +1,4 @@
 #include <cx-engine/ui/dialog-box.hpp>
-#include <cx-engine/utils/wrap-text.hpp>
 #include <cx-engine/ui/cut-corner-rect.hpp>
 
 namespace cx::ui {
@@ -27,19 +26,21 @@ void DialogBox::updateLayout() {
     float padding = 20.f * app.uiScale;
     float currentY = dialogTopLeft.y + padding;
 
-    titleText.setPosition({ dialogTopLeft.x + bgBounds.size.x / 2.f, currentY });
-    titleText.setOrigin({ titleText.getLocalBounds().size.x / 2.f, 0.f });
-    currentY += titleText.getGlobalBounds().size.y + padding;
+    // Title layout
+    titleBrowser.setUiScale(app.uiScale);
+    titleBrowser.setMaxWidth(bgBounds.size.x * 0.9f);
+    titleBrowser.update(0.f);
+    sf::Vector2f titleSize = titleBrowser.getSize();
+    titleBrowser.setPosition({ dialogTopLeft.x + (bgBounds.size.x - titleSize.x) / 2.f, currentY });
+    currentY += titleSize.y + padding;
 
-    descriptionText.setString(wrapText(
-        descriptionText.getString(),
-        descriptionText.getFont(),
-        descriptionText.getCharacterSize(),
-        bgBounds.size.x * 0.8f
-    ));
-    descriptionText.setPosition({ dialogTopLeft.x + bgBounds.size.x / 2.f, currentY });
-    descriptionText.setOrigin({ descriptionText.getLocalBounds().size.x / 2.f, 0.f });
-    currentY += descriptionText.getGlobalBounds().size.y + padding;
+    // Description layout
+    descriptionBrowser.setUiScale(app.uiScale);
+    descriptionBrowser.setMaxWidth(bgBounds.size.x * 0.8f);
+    descriptionBrowser.update(0.f);
+    sf::Vector2f descSize = descriptionBrowser.getSize();
+    descriptionBrowser.setPosition({ dialogTopLeft.x + (bgBounds.size.x - descSize.x) / 2.f, currentY });
+    currentY += descSize.y + padding;
 
     float totalButtonsWidth = 0;
     if (!buttons.empty()) {
@@ -66,23 +67,17 @@ void DialogBox::updateLayout() {
     }
 }
 
-DialogBox::DialogBox(App& app, const sf::Font& font, String title, String description, InitList<ButtonConfig> btns,
+DialogBox::DialogBox(App& app, const sf::Font& font, TextDocument title, TextDocument description, InitList<ButtonConfig> btns,
                      sf::Color borderColor, float borderWidth)
     : app(app)
-    , titleText(font, title)
-    , descriptionText(font, description)
     , closeButton(MenuButton(app, font, "X", u32(20.f * app.uiScale)))
     , fillColor(sf::Color(0, 0, 0, 180))
     , borderColor(borderColor)
     , borderWidth(borderWidth)
 {
+    titleBrowser.setDocument(std::move(title));
+    descriptionBrowser.setDocument(std::move(description));
     setButtons(btns);
-
-    titleText.setFillColor(sf::Color::White);
-    descriptionText.setFillColor(sf::Color(200, 200, 200));
-
-    titleText.setCharacterSize(u32(32.f * app.uiScale));
-    descriptionText.setCharacterSize(u32(22.f * app.uiScale));
 
     closeButton->setPadding({12.f * app.uiScale, 6.f * app.uiScale});
     closeButton->setSlideAmount(0.f);
@@ -107,7 +102,8 @@ void DialogBox::setButtons(InitList<ButtonConfig> btns) {
     }
 
     for (const auto& config: btns) {
-        auto btn = std::make_unique<MenuButton>(app, descriptionText.getFont(), config.label, charSize);
+        // use default closeButton font as fallback for buttons
+        auto btn = std::make_unique<MenuButton>(app, closeButton->getFont(), config.label, charSize);
         btn->setUiScale(app.uiScale);
         btn->setPadding({30.f * app.uiScale, 15.f * app.uiScale});
         btn->setOnRelease([this, id = config.id](MenuButton&) {
@@ -124,23 +120,13 @@ void DialogBox::setButtons(InitList<ButtonConfig> btns) {
     updateLayout();
 }
 
-void DialogBox::setTitle(String newTitle) {
-    titleText.setString(newTitle);
+void DialogBox::setTitle(TextDocument newTitle) {
+    titleBrowser.setDocument(std::move(newTitle));
     updateLayout();
 }
 
-void DialogBox::setDescription(String newDescription) {
-    descriptionText.setString(newDescription);
-    updateLayout();
-}
-
-void DialogBox::setTitleFont(const sf::Font& font) {
-    titleText.setFont(font);
-    updateLayout();
-}
-
-void DialogBox::setDescriptionFont(const sf::Font& font) {
-    descriptionText.setFont(font);
+void DialogBox::setDescription(TextDocument newDescription) {
+    descriptionBrowser.setDocument(std::move(newDescription));
     updateLayout();
 }
 
@@ -150,24 +136,6 @@ void DialogBox::setButtonFont(const sf::Font& font) {
     }
     closeButton->setFont(font);
     updateLayout();
-}
-
-void DialogBox::setTitleCharacterSize(u32 size) {
-    titleText.setCharacterSize(size);
-    updateLayout();
-}
-
-void DialogBox::setDescriptionCharacterSize(u32 size) {
-    descriptionText.setCharacterSize(size);
-    updateLayout();
-}
-
-void DialogBox::setTitleColor(sf::Color color) {
-    titleText.setFillColor(color);
-}
-
-void DialogBox::setDescriptionColor(sf::Color color) {
-    descriptionText.setFillColor(color);
 }
 
 void DialogBox::setBackgroundColor(sf::Color color) {
@@ -206,6 +174,8 @@ void DialogBox::update(float dt) {
     if (!isOpen()) return;
 
     buttonList.update(dt);
+    titleBrowser.update(dt);
+    descriptionBrowser.update(dt);
 
     cx::Gamepad* pad = app.gamepads.hasPrimary() ? &app.gamepads.get() : nullptr;
     if (pad) {
@@ -236,8 +206,8 @@ void DialogBox::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     if (!isOpen()) return;
 
     target.draw(background, states);
-    target.draw(titleText, states);
-    target.draw(descriptionText, states);
+    target.draw(titleBrowser, states);
+    target.draw(descriptionBrowser, states);
     target.draw(buttonList, states);
     if (closeButton && allowClose) {
         target.draw(*closeButton, states);

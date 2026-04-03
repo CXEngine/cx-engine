@@ -4,8 +4,8 @@
 #include <cx-engine/defs/types.hpp>
 #include <cx-engine/core/app.hpp>
 #include <cx-engine/ui/dynamic-button-list.hpp>
-#include <cx-engine/ui/menu-button.hpp>
-#include <cx-engine/systems/gamepad/gamepad.hpp>
+#include <cx-engine/ui/text-browser.hpp>
+#include <cx-engine/ui/text/document.hpp>
 
 namespace cx::ui {
 
@@ -23,8 +23,8 @@ private:
     App& app;
     sf::ConvexShape background;
 
-    sf::Text titleText;
-    sf::Text descriptionText;
+    TextBrowser titleBrowser;
+    TextBrowser descriptionBrowser;
 
     DynamicButtonList buttonList;
     Vec<UniquePtr<MenuButton>> buttons;
@@ -45,27 +45,27 @@ private:
     void centerElements();
 
 public:
-    DialogBox(App& app, const sf::Font& font, String title, String description, InitList<ButtonConfig> btns,
+    DialogBox(App& app, const sf::Font& font, TextDocument title, TextDocument description, InitList<ButtonConfig> btns,
               sf::Color borderColor = sf::Color::White, float borderWidth = 2.f);
 
     void setButtons(InitList<ButtonConfig> btns);
 
-    void setTitle(String newTitle);
-    void setDescription(String newDescription);
+    void setTitle(TextDocument newTitle);
+    void setDescription(TextDocument newDescription);
 
-    void setTitleFont(const sf::Font& font);
-    void setDescriptionFont(const sf::Font& font);
+    TextBrowser& getTitleBrowser() { return titleBrowser; }
+    const TextBrowser& getTitleBrowser() const { return titleBrowser; }
+
+    TextBrowser& getDescriptionBrowser() { return descriptionBrowser; }
+    const TextBrowser& getDescriptionBrowser() const { return descriptionBrowser; }
+
     void setButtonFont(const sf::Font& font);
 
-    void setTitleCharacterSize(u32 size);
-    void setDescriptionCharacterSize(u32 size);
-
-    void setTitleColor(sf::Color color);
-    void setDescriptionColor(sf::Color color);
     void setBackgroundColor(sf::Color color);
     void setOverlayColor(sf::Color color);
 
     void setShowCloseButton(bool show);
+
     void setOnClose(CloseCallback callback);
 
     void bindCloseButton(PadButton btn) {
