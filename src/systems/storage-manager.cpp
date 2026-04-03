@@ -23,7 +23,7 @@ fs::path StorageManager::initConfigDir() {
 #   if CX_PLATFORM_IS_WINDOWS
         PWSTR widePath = nullptr;
         if (SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &widePath) == S_OK) {
-            path = fs::path(widePath) / "Titandrop";
+            path = fs::path(widePath) / app.name;
             CoTaskMemFree(widePath);
         }
 #   elif CX_PLATFORM_IS_MACOS
@@ -39,7 +39,7 @@ fs::path StorageManager::initConfigDir() {
             path = fs::path(home)
                  / "Library"
                  / "Application Support"
-                 / "Titandrop";
+                 / app.name;
         }
 #   else
         const char* xdg = getenv("XDG_CONFIG_HOME");
@@ -73,7 +73,7 @@ fs::path StorageManager::initSavesDir() {
 #   if CX_PLATFORM_IS_WINDOWS
         PWSTR widePath = nullptr;
         if (SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &widePath) == S_OK) {
-            path = fs::path(widePath) / "Titandrop";
+            path = fs::path(widePath) / app.name;
             CoTaskMemFree(widePath);
         }
 #   elif CX_PLATFORM_IS_MACOS
@@ -88,7 +88,7 @@ fs::path StorageManager::initSavesDir() {
             path = fs::path(home)
                  / "Library"
                  / "Application Support"
-                 / "Titandrop";
+                 / app.name;
         }
 #   else
         const char* xdg = getenv("XDG_DATA_HOME");
@@ -116,7 +116,7 @@ fs::path StorageManager::initCacheDir() {
 #   if CX_PLATFORM_IS_WINDOWS
         PWSTR widePath = nullptr;
         if (SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &widePath) == S_OK) {
-            path = fs::path(widePath) / "Titandrop" / "Cache";
+            path = fs::path(widePath) / app.name / "Cache";
             CoTaskMemFree(widePath);
         }
 #   elif CX_PLATFORM_IS_MACOS
@@ -131,7 +131,7 @@ fs::path StorageManager::initCacheDir() {
             path = fs::path(home)
                  / "Library"
                  / "Caches"
-                 / "Titandrop";
+                 / app.name;
         }
 #   else
         const char* xdg = getenv("XDG_CACHE_HOME");
