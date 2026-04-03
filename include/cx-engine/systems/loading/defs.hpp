@@ -5,7 +5,7 @@ namespace cx {
 
 struct LoadingStep {
     HybridStr desc;
-    UniquePtr<LoadingStep> substeps;
+    Vec<LoadingStep> substeps;
     Func<void()> task;
     float weight = 1.0f;
 };
