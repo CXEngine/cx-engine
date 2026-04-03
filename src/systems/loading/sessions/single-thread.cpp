@@ -65,7 +65,11 @@ void SingleThreadLoadingSession::processStep(const LoadingStep& step) {
 
     if (step.substeps.empty()) {
         completedWeight += step.weight;
-        globalProgress = completedWeight / totalWeight;
+        if (totalWeight > 0) {
+            globalProgress = completedWeight / totalWeight;
+        } else {
+            globalProgress = 1.0f;
+        }
         pushEvent({ LoadingEvent::Type::Progress, nullptr, globalProgress.load() });
     }
 
