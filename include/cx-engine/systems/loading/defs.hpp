@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cx-engine/utils/hybrid-str.hpp>
 #include <cx-engine/defs/types.hpp>
 

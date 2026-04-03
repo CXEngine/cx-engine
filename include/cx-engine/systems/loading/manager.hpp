@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cx-engine/systems/loading/defs.hpp>
 
 namespace cx {
