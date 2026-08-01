@@ -17,6 +17,7 @@
 #include <vector>
 
 namespace cx {
+inline namespace types {
 
 using i64 = int64_t;
 using i32 = int32_t;
@@ -100,4 +101,5 @@ using GameScaleUnit = float;
 using TrueType = std::true_type;
 using FalseType = std::false_type;
 
-}
+} // namespace types
+} // namespace cx
