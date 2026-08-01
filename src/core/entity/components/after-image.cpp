@@ -1,4 +1,5 @@
 #include <cx-engine/core/entity/components/after-image.hpp>
+#include <cx-engine/core/entity/components/sprite.hpp>
 
 #include <cx-engine/core/entity/entity.hpp>
 
@@ -35,7 +36,7 @@ void AfterImageComponent::update(float dt) {
                 float alphaRatio = it->lifetime / it->totalLifetime;
                 sf::Color color = it->targetColor;
                 color.a = static_cast<u8>(std::max((it->initialAlpha * alphaRatio) - 0.2f, 0.f));
-                it->object.setColor(color);
+                it->sprite.setColor(color);
             }
             ++it;
         }
@@ -44,13 +45,13 @@ void AfterImageComponent::update(float dt) {
 
 void AfterImageComponent::drawBefore(sf::RenderTarget& target, sf::RenderStates states) const {
     for (const auto& ghost: ghosts) {
-        target.draw(ghost.object, states);
+        target.draw(ghost.sprite, states);
     }
 }
 
 void AfterImageComponent::spawn() {
     Ghost ghost = {
-        .object = parent,
+        .sprite = parent.sprite().getSprite(),
         .lifetime = ghostLifetime,
         .totalLifetime = ghostLifetime,
         .initialAlpha = 0,
@@ -58,13 +59,13 @@ void AfterImageComponent::spawn() {
     };
 
     if (spawnCallback) {
-        ghost.object.setColor(ghostColor);
+        ghost.sprite.setColor(ghostColor);
         spawnCallback(ghost);
     } else {
-        ghost.object.setColor(ghostColor);
+        ghost.sprite.setColor(ghostColor);
     }
 
-    ghost.targetColor = ghost.object.getColor();
+    ghost.targetColor = ghost.sprite.getColor();
     ghost.initialAlpha = ghost.targetColor.a;
 
     ghosts.push_back(std::move(ghost));

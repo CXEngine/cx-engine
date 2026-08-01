@@ -6,7 +6,7 @@
 #include <cx-engine/ui/text-browser.hpp>
 #include <cx-engine/ui/text/builder.hpp>
 #include <cx-engine/ui/scroll-view.hpp>
-#include <cx-engine/ui/ui-widget.hpp>
+#include <cx-engine/ui/widget.hpp>
 
 cx::String getRandomSentence() {
     cx::String sentences[] = {

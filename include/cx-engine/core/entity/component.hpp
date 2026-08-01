@@ -24,10 +24,21 @@ public:
         sf::RenderTarget& target,
         sf::RenderStates states = sf::RenderStates::Default
     ) const {}
+    virtual void drawMiddle(
+        sf::RenderTarget& target,
+        sf::RenderStates states = sf::RenderStates::Default
+    ) const {}
     virtual void drawAfter(
         sf::RenderTarget& target,
         sf::RenderStates states = sf::RenderStates::Default
     ) const {}
+
+    virtual void onPositionUpdate() {}
+
+    virtual void setPosition(const sf::Vector2f& position) {}
+    virtual void setRotation(sf::Angle angle) {}
+    virtual void setScale(const sf::Vector2f& factors) {}
+    virtual void setOrigin(const sf::Vector2f& origin) {}
 
     virtual void setEnabled(bool isEnabled) { enabled = isEnabled; }
     virtual bool isEnabled() const { return enabled; }

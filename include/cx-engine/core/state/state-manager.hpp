@@ -137,7 +137,7 @@ public:
                 state->coverHandle(event);
             }
 
-            if (!state->hasFlag(StateFlags::AllowUpdate)) break;
+            if (!state->hasFlag(StateFlags::UpdateBelow)) break;
         }
     }
 
@@ -151,7 +151,7 @@ public:
                 state->coverUpdate(dt);
             }
 
-            if (!state->hasFlag(StateFlags::AllowUpdate)) {
+            if (!state->hasFlag(StateFlags::UpdateBelow)) {
                 break;
             }
         }

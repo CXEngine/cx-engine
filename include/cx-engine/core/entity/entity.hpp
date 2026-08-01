@@ -2,7 +2,7 @@
 
 #include <SFML/Window/Event.hpp>
 
-#include <cx-engine/core/obj/sprite-object.hpp>
+#include <cx-engine/core/entity/object.hpp>
 
 #include <cx-engine/core/entity/component.hpp>
 #include <cx-engine/utils/hybrid-ptr.hpp>
@@ -11,13 +11,12 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include <type_traits>
-#include <typeindex>
-
 namespace cx {
 
+class SpriteComponent;
+
 class Team;
-class Entity: public SpriteObject {
+class Entity: public Object {
 protected:
     HashMap<TypeIndex, HybridPtr<EntityComponent>> components;
 
@@ -25,12 +24,22 @@ public:
     bool isAlive = true;
 
 public:
-    Entity(SpriteObject base);
+    Entity(Object base);
     Entity(const sf::Texture& texture, const sf::IntRect& rect);
 
-    void update(float dt);
-    void handle(const sf::Event& event);
-    void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const;
+    void update(float dt) override;
+    void handle(const sf::Event& event) override;
+    void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const override;
+
+    virtual void onPositionUpdate() override;
+
+    virtual void setPosition(const sf::Vector2f& position);
+    virtual void setRotation(sf::Angle angle);
+    virtual void setScale(const sf::Vector2f& factors);
+    virtual void setOrigin(const sf::Vector2f& origin);
+
+    SpriteComponent& sprite();
+    const SpriteComponent& sprite() const;
 
     template <typename TComponent>
     requires std::is_base_of_v<EntityComponent, TComponent>
@@ -42,7 +51,7 @@ public:
     template <typename TComponent, typename... Args>
     requires std::is_base_of_v<EntityComponent, TComponent>
     TComponent& addComponent(Args&&... args) {
-        auto component = HybridPtr<TComponent>::Make(std::forward<Args>(args)...);
+        auto component = HybridPtr<TComponent>::Make(*this, std::forward<Args>(args)...);
         return addComponent(std::move(component));
     }
 

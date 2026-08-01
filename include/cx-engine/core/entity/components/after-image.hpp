@@ -1,15 +1,12 @@
 #pragma once
 
-#include "cx-engine/core/obj/sprite-object.hpp"
-#include "cx-engine/defs/types.hpp"
 #include <cx-engine/core/entity/component.hpp>
+#include <cx-engine/core/entity/entity.hpp>
+#include <cx-engine/defs/types.hpp>
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Transform.hpp>
-
-#include <vector>
-#include <functional>
 
 namespace sf {
     class RenderTarget;
@@ -26,15 +23,15 @@ namespace cx {
 class AfterImageComponent: public EntityComponent {
 public:
     struct Ghost {
-        SpriteObject object;
+        sf::Sprite sprite;
         float lifetime;
         float totalLifetime;
         u8 initialAlpha;
         sf::Color targetColor;
     };
 
-    using GhostUpdateCallback = std::function<void(Ghost& ghost, float deltaTime)>;
-    using GhostSpawnCallback = std::function<void(Ghost& ghost)>;
+    using GhostUpdateCallback = Func<void(Ghost& ghost, float deltaTime)>;
+    using GhostSpawnCallback = Func<void(Ghost& ghost)>;
 
     AfterImageComponent(Entity& parent, float spawnInterval, float ghostLifetime);
 

@@ -53,7 +53,7 @@ public:
         return { f.y, -f.x };
     }
 
-    void moveAndCollide(const sf::Vector2f& desiredMovement, Slice<cx::Polygon> obstacles);
+    void moveAndCollide(const sf::Vector2f& desiredMovement, Slice<Polygon> obstacles);
 };
 
 } // namespace cx

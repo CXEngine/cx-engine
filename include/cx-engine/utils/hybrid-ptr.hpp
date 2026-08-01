@@ -7,8 +7,8 @@ namespace cx {
 
 /// @brief A smart pointer that can either borrow a raw pointer or take ownership of it
 ///
-/// HybridPtr provides a flexible way to manage memory where the ownership state can be 
-/// determined at runtime. It is useful for APIs that might either return a reference 
+/// HybridPtr provides a flexible way to manage memory where the ownership state can be
+/// determined at runtime. It is useful for APIs that might either return a reference
 /// to an existing object or a newly allocated one.
 template <typename T>
 class HybridPtr {
@@ -112,7 +112,7 @@ public:
     /// @brief Gets the underlying raw pointer
     /// @return A pointer to the object, or nullptr
     T* get() { return ptr; }
-    
+
     /// @brief Gets the underlying constant raw pointer
     /// @return A constant pointer to the object, or nullptr
     const T* get() const { return ptr; }
@@ -121,7 +121,7 @@ public:
     /// @return A reference to the pointed-to object
     /// @warning Behavior is undefined if the pointer is nullptr
     T& ref() { return *ptr; };
-    
+
     /// @brief Gets a constant reference to the object
     /// @return A constant reference to the pointed-to object
     /// @warning Behavior is undefined if the pointer is nullptr
@@ -129,13 +129,13 @@ public:
 
     /// @brief Member access operator
     T* operator->() { return get(); }
-    
+
     /// @brief Constant member access operator
     const T* operator->() const { return get(); }
 
     /// @brief Dereference operator
     T& operator*() { return *ptr; };
-    
+
     /// @brief Constant dereference operator
     const T& operator*() const { return *ptr; }
 
