@@ -32,11 +32,11 @@ public:
 
     /// @brief Returns false
     /// @return Constant false value
-    bool getFsrEnabled() const override { return false; }
+    bool isFsrEnabled() const override { return false; }
 
     /// @brief Returns true
     /// @return Constant true value
-    bool getVsyncEnabled() const override { return true; }    
+    bool isVsyncEnabled() const override { return true; }
 
     /// @brief Returns std::nullopt
     /// @return Empty optional
@@ -44,7 +44,7 @@ public:
 
     /// @brief Returns false
     /// @return Constant false value
-    bool getFxaaEnabled() const override { return false; }
+    bool isFxaaEnabled() const override { return false; }
 
     /// @brief Returns 4
     /// @return Constant MSAA sample count

@@ -73,7 +73,7 @@ public:
 
     /// @brief Indicates whether FSR upscaling should be applied to the render output
     /// @return True if FSR is enabled
-    virtual bool           getFsrEnabled() const = 0;
+    virtual bool           isFsrEnabled() const = 0;
 
     /// @brief Returns the frame rate cap
     /// @return Optional FPS limit, or std::nullopt if unlimited
@@ -81,11 +81,11 @@ public:
 
     /// @brief Indicates whether the engine should synchronize with the refresh rate
     /// @return True if V-Sync is requested
-    virtual bool           getVsyncEnabled() const = 0;
+    virtual bool           isVsyncEnabled() const = 0;
 
     /// @brief Indicates whether FXAA post-processing should be enabled
     /// @return True if FXAA is enabled
-    virtual bool           getFxaaEnabled() const = 0;
+    virtual bool           isFxaaEnabled() const = 0;
 
     /// @brief Returns the number of MSAA samples for hardware anti-aliasing
     /// @return MSAA sample count (e.g., 0, 2, 4, 8)

@@ -127,7 +127,7 @@ void App::forceRefreshWindow(WindowType type) {
     case WindowType::Normal:
         title = name;
         fpsLimit = cfg.getFpsLimit();
-        vsyncEnabled = cfg.getVsyncEnabled();
+        vsyncEnabled = cfg.isVsyncEnabled();
         break;
     case WindowType::Splash:
         title = "Loading " + name;
@@ -167,10 +167,10 @@ void App::forceRefreshWindow(WindowType type) {
 
     renderTexture = sf::RenderTexture(renderTextureResolution);
     renderPipeline.clear();
-    if (cfg.getFxaaEnabled()) {
+    if (cfg.isFxaaEnabled()) {
         renderPipeline.addPass(new FxaaPass(*this));
     }
-    if (cfg.getFsrEnabled()) {
+    if (cfg.isFsrEnabled()) {
         renderPipeline.addPass(new FfxPass(*this));
     }
 
