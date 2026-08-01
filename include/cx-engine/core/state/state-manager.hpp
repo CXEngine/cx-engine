@@ -7,6 +7,13 @@
 
 namespace cx {
 
+/// @brief Manages a stack of State objects and controls their lifecycle and behavior.
+///
+/// The StateManager orchestrates state updates, input handling, and rendering.
+/// It allows states to be pushed, popped, or cleared from the stack. To ensure
+/// safe modifications during the update loop, state changes can be deferred using
+/// the request methods and applied via applyPending(). This is done automatically
+/// by the @ref App class so in most cases you shouldn't use this api directly,
 class StateManager {
 private:
     static constexpr usize MaxPendingOps = 10;
@@ -51,31 +58,45 @@ private:
     }
 
 public:
+    /// Constructs the StateManager with a reference to the top state pointer.
     StateManager(State*& stateStackTop)
         : stateStackTop(stateStackTop) {}
 
+    /// Destructor, clears all states in the stack.
     ~StateManager() {
         clear();
     }
 
+    /// Requests to push a new state onto the stack.
     void requestPush(State* state) {
         if (pendingBuf.isFull()) return;
         pendingBuf.emplace(PendingOpType::Push, state);
     }
 
+    /// Requests to pop the top state from the stack.
     void requestPop() {
         if (pendingBuf.isFull()) return;
         pendingBuf.emplace(PendingOpType::Pop);
     }
 
+    /// Requests to clear all states from the stack.
     void requestClear() {
         if (pendingBuf.isFull()) return;
         pendingBuf.emplace(PendingOpType::Clear);
     }
 
+    /// Immediately pushes a new state onto the stack.
+    /// @warning Unsafe if called from a state's update/draw/... method
+    /// @see requestPush
     inline void forcePush(State* state) { applyPush(state); }
+
+    /// Immediately pops the top state from the stack.
+    /// @warning Unsafe if called from a state's update/draw/... method
+    /// @see requestPop
     inline void forcePop() { applyPop(); }
 
+    /// Applies all pending operations added via
+    /// @ref requestPop, @ref requestPush and @ref requestClear
     void applyPending() {
         for (usize i = 0; i < pendingBuf.getElementCount(); ++i) {
             const PendingOp& op = pendingBuf[i];
@@ -102,7 +123,6 @@ public:
     State* stateAtTop() {
         return stateStack.empty() ? nullptr : stateStack.back();
     }
-
     State* currentState() {
         return stateAtTop();
     }
@@ -206,7 +226,6 @@ public:
     State* stateAt(usize index) {
         return stateStack[index];
     }
-
     const State* stateAt(usize index) const {
         return stateStack[index];
     }
@@ -215,7 +234,6 @@ public:
         if (stateStack.size() < 2) return nullptr;
         return stateStack[stateStack.size() - 2];
     }
-
     const State* lastState() const {
         if (stateStack.size() < 2) return nullptr;
         return stateStack[stateStack.size() - 2];
