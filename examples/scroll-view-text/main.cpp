@@ -1,4 +1,3 @@
-
 #include <cx-engine/core/app.hpp>
 
 #include <cx-engine/systems/logging/logger.hpp>
@@ -71,7 +70,7 @@ public:
         srand(time(NULL));
         cx::ui::TextDocument doc = makeDocument(defaultFont, 150);
 
-        scrollView.getContent().setDocument(doc); 
+        scrollView.getContent().setDocument(doc);
         cx::Logger::info("hello");
     }
 

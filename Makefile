@@ -7,31 +7,31 @@ LIBTYPE ?= auto
 
 ifeq ($(OS),Windows_NT)
 	PLATFORM := windows
-	
+
 	# commands
 	MD = if not exist "$(subst /,\,$(patsubst %/,%,$(1)))" mkdir "$(subst /,\,$(patsubst %/,%,$(1)))"
 	RM = if exist "$(subst /,\,$(1))" del /Q /F "$(subst /,\,$(1))"
 	RD = if exist "$(subst /,\,$(1))" rmdir /S /Q "$(subst /,\,$(1))"
 	CP = xcopy /Y /E /I "$(subst /,\,$(1))" "$(subst /,\,$(2))"
-	
+
 	# extensions
 	EXE_EXT := .exe
 	LIB_EXT := .dll
 	STATIC_LIB_EXT := .lib
-	
+
 	# sources
 	SOURCES := $(shell powershell -NoProfile -Command "Get-ChildItem -Path 'src' -Recurse -Filter *.cpp | Resolve-Path -Relative | ForEach-Object { $$_ -replace '\\\\','/' -replace '^\./','' }")
 else
 	PLATFORM := posix
-	
+
 	# commands
 	MD = mkdir -p "$(1)"
 	RM = rm -f "$(1)"
 	RD = rm -rf "$(1)"
 	CP = cp -r "$(1)" "$(2)"
-	
+
 	# extensions
-	EXE_EXT := .elf
+	EXE_EXT :=
 	LIB_EXT := .so
 	STATIC_LIB_EXT := .a
 
