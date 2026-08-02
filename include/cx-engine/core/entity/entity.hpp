@@ -24,6 +24,7 @@ public:
     bool isAlive = true;
 
 public:
+    Entity() = default;
     Entity(Object base);
     Entity(const sf::Texture& texture, const sf::IntRect& rect);
 

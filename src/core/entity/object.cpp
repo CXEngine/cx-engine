@@ -1,4 +1,4 @@
-#include <cx-engine/core/obj/object.hpp>
+#include <cx-engine/core/entity/object.hpp>
 #include <cx-engine/core/math.hpp>
 
 #include <cmath>

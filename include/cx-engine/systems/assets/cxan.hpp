@@ -33,8 +33,8 @@ private:
 public:
     explicit Animation() = default;
 
-    explicit inline Animation(Slice<const byte> data) { load(data); }
-    explicit inline Animation(const fs::path& file)   { open(file); }
+    explicit Animation(Slice<const byte> data) { load(data); }
+    explicit Animation(const fs::path& file)   { open(file); }
 
     void open(const fs::path& file);
     void load(Slice<const byte> data);
