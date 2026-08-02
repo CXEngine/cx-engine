@@ -104,7 +104,7 @@ void Animation::load(Slice<const byte> data) {
         const void* pngPtr = base + pos;
 
         sf::Texture tex;
-        tex.setSmooth(true);
+        tex.setSmooth(false);
         if (!tex.loadFromMemory(pngPtr, pngSize))
             throw AnimationLoadError("Failed to load CXAP PNG for page " + std::to_string(p));
 
