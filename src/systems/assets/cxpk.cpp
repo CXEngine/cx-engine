@@ -3,10 +3,10 @@
 namespace cx {
 
 CxpkArchive::CxpkArchive() = default;
-CxpkArchive::CxpkArchive(const std::filesystem::path& filePath) { open(filePath); }
+CxpkArchive::CxpkArchive(const fs::path& filePath) { open(filePath); }
 CxpkArchive::~CxpkArchive() = default;
 
-void CxpkArchive::open(const std::filesystem::path& filePath) {
+void CxpkArchive::open(const fs::path& filePath) {
     backend.loadFromFile(filePath);
 }
 
@@ -33,15 +33,6 @@ sf::Texture CxpkArchive::loadTexture(StringView path) const {
         throw CxpkLoadError("failed to load sfml texture: " + String(path));
 
     return tex;
-}
-
-ScaledImage CxpkArchive::loadScaledImage(StringView path) const {
-    if (!isOpen()) throw CxpkLoadError("archive is not loaded");
-    auto bytes = getBytes(path);
-
-    ScaledImage img;
-    img.load(bytes);
-    return img;
 }
 
 sf::SoundBuffer CxpkArchive::loadSound(StringView path) const {
@@ -79,20 +70,19 @@ sf::Font CxpkArchive::loadFont(StringView path) const {
 
 TileMap CxpkArchive::loadTileMap(StringView path) const {
     if (!isOpen()) throw CxpkLoadError("archive is not loaded");
-    auto bytes = getBytes(path);
-
-    TileMap map;
-    map.load(bytes);
-    return map;
+    return TileMap(getBytes(path));
 }
-
 TextureAtlas CxpkArchive::loadTextureAtlas(StringView path) const {
     if (!isOpen()) throw CxpkLoadError("archive is not loaded");
-    auto bytes = getBytes(path);
-
-    TextureAtlas atlas;
-    atlas.load(bytes);
-    return atlas;
+    return TextureAtlas(getBytes(path));
+}
+ScaledImage CxpkArchive::loadScaledImage(StringView path) const {
+    if (!isOpen()) throw CxpkLoadError("archive is not loaded");
+    return ScaledImage(getBytes(path));
+}
+Animation CxpkArchive::loadAnimation(StringView path) const {
+    if (!isOpen()) throw CxpkLoadError("archive is not loaded");
+    return Animation(getBytes(path));
 }
 
 sf::Shader CxpkArchive::loadShader(StringView path, sf::Shader::Type type) const {
@@ -101,9 +91,8 @@ sf::Shader CxpkArchive::loadShader(StringView path, sf::Shader::Type type) const
     auto sv = StringView((const char*) bytes.data(), bytes.size());
 
     sf::Shader shader;
-    if (!shader.loadFromMemory(sv, type)) {
+    if (!shader.loadFromMemory(sv, type))
         throw CxpkLoadError("failed to load sfml shader from memory: " + String(path));
-    }
     return shader;
 }
 
@@ -116,9 +105,8 @@ sf::Shader CxpkArchive::loadShader(StringView vertShaderPath, StringView fragSha
     auto vertStringView = StringView((const char*) fragBytes.data(), fragBytes.size());
 
     sf::Shader shader;
-    if (!shader.loadFromMemory(vertStringView, fragStringView)) {
+    if (!shader.loadFromMemory(vertStringView, fragStringView))
         throw CxpkLoadError("failed to load sfml shader from memory (vert: " + String(vertShaderPath) + ", frag: " + String(fragShaderPath) + ")");
-    }
     return shader;
 }
 

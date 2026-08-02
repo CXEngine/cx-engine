@@ -2,12 +2,9 @@
 
 #include <cx-engine/defs/errors.hpp>
 #include <cx-engine/defs/types.hpp>
+#include <cx-engine/defs/fs.hpp>
 
 #include <SFML/Graphics.hpp>
-
-#include <filesystem>
-#include <stdexcept>
-#include <cstdint>
 
 namespace cx {
 
@@ -36,10 +33,10 @@ private:
 public:
     explicit Animation() = default;
 
-    explicit inline Animation(const std::filesystem::path& file) { open(file); }
-    explicit inline Animation(Slice<const byte> data)            { load(data); }
+    explicit inline Animation(Slice<const byte> data) { load(data); }
+    explicit inline Animation(const fs::path& file)   { open(file); }
 
-    void open(const std::filesystem::path& file);
+    void open(const fs::path& file);
     void load(Slice<const byte> data);
 
     float getFps() const noexcept { return fps; }

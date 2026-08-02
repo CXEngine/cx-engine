@@ -14,7 +14,7 @@ namespace {
     constexpr usize CXAP_HEADER_SIZE = 4 + 2 + 2 + 4 + 4 + 4;
 }
 
-void Animation::open(const std::filesystem::path& file) {
+void Animation::open(const fs::path& file) {
     std::ifstream ifs(file, std::ios::binary | std::ios::ate);
     if (!ifs)
         throw AnimationLoadError("failed to open CXAN file: " + file.string());

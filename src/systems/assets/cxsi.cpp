@@ -12,7 +12,7 @@ namespace {
     constexpr char CXSI_MAGIC[4] = { 'C', 'X', 'S', 'I' };
 }
 
-void ScaledImage::open(const std::filesystem::path& file) {
+void ScaledImage::open(const fs::path& file) {
     std::ifstream ifs(file, std::ios::binary | std::ios::ate);
     if (!ifs)
         throw ScaledImageLoadError("failed to open CXSI file: " + file.string());

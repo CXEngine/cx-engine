@@ -5,6 +5,8 @@
 #include <fstream>
 #include <cstring>
 
+#include <cx-engine/extern/xxhash/xxhash.h>
+
 namespace cx {
 
 namespace {
@@ -16,7 +18,7 @@ u64 TextureAtlas::xxh64Hash(const String& name) {
     return XXH64(name.data(), name.length(), XXH_SEED);
 }
 
-void TextureAtlas::open(const std::filesystem::path& file) {
+void TextureAtlas::open(const fs::path& file) {
     std::ifstream ifs(file, std::ios::binary | std::ios::ate);
     if (!ifs) {
         throw TextureAtlasLoadError("failed to open CXTA file: " + file.string());

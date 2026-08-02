@@ -2,11 +2,9 @@
 
 #include <cx-engine/defs/errors.hpp>
 #include <cx-engine/defs/types.hpp>
+#include <cx-engine/defs/fs.hpp>
 
 #include <SFML/Graphics.hpp>
-
-#include <filesystem>
-#include <stdexcept>
 
 namespace cx {
 
@@ -33,6 +31,7 @@ struct TileTableEntry { u32 firstHitbox, hitboxCount; };
 struct Hitbox { float x, y, w, h, rotation; };
 #pragma pack(pop)
 
+// @deprecated This class will be removed in the next version of cx-engine
 class TileMap {
 private:
     TileMapHeader header{};
@@ -44,8 +43,10 @@ private:
 
 public:
     TileMap() = default;
-    explicit TileMap(const std::filesystem::path& file);
+    TileMap(Slice<const byte> data) { load(data); }
+    TileMap(const fs::path& file)   { open(file); }
 
+    void open(const fs::path& path);
     void load(Slice<const byte> data);
 
     u16 getVersion() const noexcept { return header.version; }

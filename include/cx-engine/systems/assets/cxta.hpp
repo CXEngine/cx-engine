@@ -2,13 +2,9 @@
 
 #include <cx-engine/defs/errors.hpp>
 #include <cx-engine/defs/types.hpp>
+#include <cx-engine/defs/fs.hpp>
 
 #include <SFML/Graphics.hpp>
-
-#include <filesystem>
-#include <stdexcept>
-
-#include <cx-engine/extern/xxhash/xxhash.h>
 
 namespace cx {
 
@@ -18,9 +14,11 @@ class TextureAtlas {
 public:
     TextureAtlas() = default;
 
-    void load(Slice<const byte> data);
+    TextureAtlas(Slice<const byte> data) { load(data); }
+    TextureAtlas(fs::path& file)         { open(file); }
 
-    void open(const std::filesystem::path& file);
+    void load(Slice<const byte> data);
+    void open(const fs::path& file);
 
     sf::IntRect getRect(const String& name) const;
     sf::Sprite getSprite(const String& name) const;

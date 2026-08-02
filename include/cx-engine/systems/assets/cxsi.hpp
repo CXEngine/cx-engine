@@ -2,27 +2,20 @@
 
 #include <cx-engine/defs/errors.hpp>
 #include <cx-engine/defs/types.hpp>
+#include <cx-engine/defs/fs.hpp>
 
 #include <SFML/Graphics.hpp>
 
-#include <filesystem>
-#include <stdexcept>
-
-
 namespace cx {
 
-/*
-CXSI — Simple image set format
-
-Format:
-- 4 bytes magic: "CXSI"
-- u16: variant count
-- for each variant:
-  - u16 width
-  - u16 height
-  - u32 png_data_len
-  - png_data (RGBA PNG)
-*/
+/// Format:
+/// - 4 bytes magic: "CXSI"
+/// - u16: variant count
+/// - for each variant:
+///   - u16 width
+///   - u16 height
+///   - u32 png_data_len
+///   - png_data (RGBA PNG)
 
 CX_DEFINE_STANDARD_EXCEPTION(ScaledImageLoadError, ResourceException);
 
@@ -42,16 +35,16 @@ private:
 public:
     explicit ScaledImage() = default;
 
-    explicit inline ScaledImage(const std::filesystem::path& file) { open(file); }
-    explicit inline ScaledImage(Slice<const byte> data)            { load(data); }
-    explicit inline ScaledImage(sf::Texture texture)               { addVariant(std::move(texture)); }
+    explicit ScaledImage(const fs::path& file)   { open(file); }
+    explicit ScaledImage(Slice<const byte> data) { load(data); }
+    explicit ScaledImage(sf::Texture texture)    { addVariant(std::move(texture)); }
 
     void addVariant(sf::Texture texture);
 
-    void open(const std::filesystem::path& file);
+    void open(const fs::path& file);
     void load(Slice<const byte> data);
 
-    inline usize getVariantCount() const noexcept { return variants.size(); }
+    usize getVariantCount() const noexcept { return variants.size(); }
 
     ScaledImageVariant getVariant(u16 index) const;
     sf::Sprite getSprite(u16 index) const;
