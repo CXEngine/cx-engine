@@ -1,8 +1,7 @@
 #pragma once
 
 #include <cx-engine/core/app.hpp>
-
-#include <cx-engine/core/obj/object.hpp>
+#include <cx-engine/core/entity/entity.hpp>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -17,7 +16,7 @@ struct BulletHitInfo {
     sf::Vector2f pos;
 };
 
-class Bullet: public Object {
+class Bullet: public Entity {
 protected:
     Weapon& weapon;
     App& app;

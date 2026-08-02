@@ -1,10 +1,10 @@
 #pragma once
 
-#include "cx-engine/core/app.hpp"
+#include <cx-engine/core/app.hpp>
 #include <cx-engine/core/world/world.hpp>
 #include <cx-engine/utils/hybrid-ptr.hpp>
 
-#include <cx-engine/core/obj/sprite-object.hpp>
+#include <cx-engine/core/entity/entity.hpp>
 
 namespace cx {
 
@@ -28,15 +28,16 @@ public:
     virtual void releaseReload() {};
 };
 
-class Weapon: public SpriteObject {
+class Weapon: public Entity {
 protected:
     HybridPtr<WeaponBehavior> behavior;
 
 public:
+    template <typename... TArgs>
     Weapon(
-        const sf::Texture& texture, const sf::IntRect& rect,
-        HybridPtr<WeaponBehavior> behavior = nullptr
-    ) : SpriteObject(texture, rect)
+        HybridPtr<WeaponBehavior> behavior = nullptr,
+        TArgs&&... args
+    ) : Entity(std::forward<TArgs>(args)...)
       , behavior(std::move(behavior))
     {}
 

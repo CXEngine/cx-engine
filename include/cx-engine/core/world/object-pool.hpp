@@ -3,7 +3,7 @@
 #include <cx-engine/utils/dynarena.hpp>
 
 #include <cx-engine/defs/types.hpp>
-#include <cx-engine/core/obj/sprite-object.hpp>
+#include <cx-engine/core/entity/entity.hpp>
 
 #include <cx-engine/gameplay/weapons/bullet.hpp>
 #include <cx-engine/core/entity/entity.hpp>
