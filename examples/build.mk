@@ -1,5 +1,3 @@
-# examples/build.mk
-
 EXAMPLES_SRC_DIRS := $(wildcard examples/*/)
 EXAMPLES_NAMES    := $(patsubst examples/%/,%,$(EXAMPLES_SRC_DIRS))
 EXAMPLES_BINS     := $(addprefix $(OUT_DIR)/examples/,$(addsuffix $(EXE_EXT),$(EXAMPLES_NAMES)))
@@ -17,9 +15,21 @@ endif
 
 examples: $(EXAMPLES_BINS)
 
-$(OUT_DIR)/examples/%$(EXE_EXT): examples/%/main.cpp $(TARGETS)
-	@$(call MD,$(@D))
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $< -o $@ $(EXAMPLE_LIBS) $(LDFLAGS) $(LDLIBS)
+define ASSET_RULE
+$$(OUT_DIR)/../examples/$(1).cxpk: examples/$(1)/assets
+	@$$(call MD,$$(@D))
+	$$(CXPK) pack $$< $$@
+endef
+
+$(foreach name,$(EXAMPLES_NAMES),$(eval $(call ASSET_RULE,$(name))))
+
+define BINARY_RULE
+$$(OUT_DIR)/examples/$(1)$$(EXE_EXT): examples/$(1)/main.cpp $(TARGETS) $$(if $$(wildcard examples/$(1)/assets),$$(OUT_DIR)/../examples/$(1).cxpk)
+	@$$(call MD,$$(@D))
+	$$(CXX) $$(CXXFLAGS) $$(INCLUDES) $$< -o $$@ $$(EXAMPLE_LIBS) $$(LDFLAGS) $$(LDLIBS)
+endef
+
+$(foreach name,$(EXAMPLES_NAMES),$(eval $(call BINARY_RULE,$(name))))
 
 clean-examples:
 	@$(call RD,$(OUT_DIR)/examples)

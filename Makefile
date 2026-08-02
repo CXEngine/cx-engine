@@ -1,5 +1,6 @@
-CXX ?= g++
+CXX ?= c++
 AR ?= ar
+CXPK ?= cxpk
 DOXYGEN ?= doxygen
 BUILD ?= release
 LINK ?= dynamic
@@ -86,7 +87,7 @@ ifeq ($(LINK),static)
 		-lsfml-audio-s \
 		-lsfml-system-s \
 		-lharfbuzz -lfreetype \
-		-Wl,-Bstatic -lFLAC -lvorbis -lvorbisenc -lvorbisfile -logg -Wl,-Bdynamic \
+		-Wl,-Bstatic -lFLAC -lvorbisfile -lvorbis -lvorbisenc -logg -Wl,-Bdynamic \
 		-lasound -ludev -lpthread \
 		-lGL -lX11 -lXrandr -lXcursor -lXi
 else

@@ -5,7 +5,7 @@
 
 #include <cx-engine/ui/text-browser.hpp>
 #include <cx-engine/ui/text/builder.hpp>
-#include <cx-engine/ui/ui-widget.hpp>
+#include <cx-engine/ui/widget.hpp>
 
 #include <SFML/Graphics/RectangleShape.hpp>
 
@@ -28,9 +28,8 @@ public:
     void init() override {
         forceRecreateWindow(cx::WindowType::Normal);
 
-        if (!quicksandFont.openFromFile("examples/text-browser/assets/Quicksand-Medium.ttf")) {
-            cx::Logger::err("Failed to load Quicksand Font");
-        }
+        cx::CxpkArchive assets("out/examples/text-browser.cxpk");
+        quicksandFont = assets.loadFont("Quicksand-Medium.ttf");
 
         browser.setWrapMode(cx::ui::TextWrap::CharWrap);
         browser.setMaxWidth(config.getTargetResolution().x);
@@ -64,7 +63,7 @@ public:
 
             .build();
 
-        browser.setDocument(doc); 
+        browser.setDocument(doc);
         cx::Logger::info("hello");
     }
 
