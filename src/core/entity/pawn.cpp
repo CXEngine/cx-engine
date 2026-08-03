@@ -28,6 +28,10 @@ Pawn& Pawn::operator=(Pawn&& other) noexcept {
     return *this;
 }
 
+void Pawn::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    target.draw(*actor, states);
+}
+
 void Pawn::controllerUpdate(float dt) {
     if (controller != nullptr)
         controller->update(dt);

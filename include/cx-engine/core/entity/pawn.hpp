@@ -2,6 +2,7 @@
 
 #include <cx-engine/utils/hybrid-ptr.hpp>
 
+#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Window/Event.hpp>
 
 namespace cx {
@@ -11,7 +12,7 @@ class ActorController;
 
 struct ActorControllerContext;
 
-class Pawn final {
+class Pawn final: public sf::Drawable {
 private:
     HybridPtr<Actor> actor;
     HybridPtr<ActorController> controller;
@@ -31,6 +32,8 @@ public:
 
     const Actor* getActor() const { return actor.get(); }
     const ActorController* getController() const { return controller.get();  }
+
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     void controllerUpdate(float dt);
     void actorUpdate(float dt);
