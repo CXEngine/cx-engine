@@ -11,7 +11,7 @@ class ActorController;
 
 struct ActorControllerContext;
 
-class Pawn {
+class Pawn final {
 private:
     HybridPtr<Actor> actor;
     HybridPtr<ActorController> controller;
@@ -19,7 +19,6 @@ private:
 public:
     Pawn(Actor& actor, ActorController& controller);
     Pawn(HybridPtr<Actor> actor, HybridPtr<ActorController> controller);
-    ~Pawn();
 
     Pawn(Pawn&& other) noexcept;
     Pawn& operator=(Pawn&& other) noexcept;
@@ -33,11 +32,14 @@ public:
     const Actor* getActor() const { return actor.get(); }
     const ActorController* getController() const { return controller.get();  }
 
-    void controllerUpdate(const ActorControllerContext& ctx);
+    void controllerUpdate(float dt);
     void actorUpdate(float dt);
 
-    void controllerHandle(const ActorControllerContext& ctx, const sf::Event& event);
+    void controllerHandle(const sf::Event& event);
     void actorHandle(const sf::Event& event);
+
+    void update(float dt);
+    void handle(const sf::Event& event);
 };
 
 } // namespace cx

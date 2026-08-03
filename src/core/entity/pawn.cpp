@@ -9,10 +9,9 @@ Pawn::Pawn(HybridPtr<Actor> actor, HybridPtr<ActorController> controller)
 {
 }
 
-Pawn::~Pawn() {}
-
 Pawn::Pawn(Pawn&& other) noexcept
-    : actor(std::move(other.actor)), controller(std::move(other.controller))
+    : actor(std::move(other.actor))
+    , controller(std::move(other.controller))
 {
     other.actor = nullptr;
     other.controller = nullptr;
@@ -29,16 +28,29 @@ Pawn& Pawn::operator=(Pawn&& other) noexcept {
     return *this;
 }
 
-void Pawn::controllerUpdate(const ActorControllerContext& ctx) {
-    if (controller != nullptr) {
-        controller->update(ctx);
-    }
+void Pawn::controllerUpdate(float dt) {
+    if (controller != nullptr)
+        controller->update(dt);
+}
+void Pawn::actorUpdate(float dt) {
+    if (actor != nullptr)
+        actor->update(dt);
 }
 
-void Pawn::actorUpdate(float dt) {
-    if (actor != nullptr) {
-        actor->update(dt);
-    }
+void Pawn::controllerHandle(const sf::Event& event) {
+    if (controller != nullptr)
+        controller->handle(event);
+}
+void Pawn::actorHandle(const sf::Event& event) {
+    if (actor != nullptr)
+        actor->handle(event);
+}
+
+void Pawn::update(float dt) {
+    controllerUpdate(dt), actorUpdate(dt);
+}
+void Pawn::handle(const sf::Event& event) {
+    controllerHandle(event), actorHandle(event);
 }
 
 } // namespace cx

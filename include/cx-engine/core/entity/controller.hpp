@@ -19,7 +19,8 @@ public:
     ActorController(Actor& target) : target(target) {}
     virtual ~ActorController() = default;
 
-    virtual void update(const ControllerContext&) = 0;
+    virtual void handle(const sf::Event& event) {}
+    virtual void update(float dt) {}
 };
 
 }
